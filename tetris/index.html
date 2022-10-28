@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Tetris</title>
+	</head>
+	<body onload="load()" style="background-image: url(login_background.jpg);
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;">
+			<div style="position: fixed;
+  						top: 50%;
+  						left: 50%;
+  						transform: translate(-50%, -50%);
+  						background-color: rgba(173, 216, 230, 0.7);
+						border-radius: 10px;">
+				<div style="margin: auto;padding: 10px;">
+					<label for="name">Введите имя пользователя:<br></label>
+				</div>
+				<div style="margin: auto;padding: 10px;">
+					<input placeholder="Имя пользователя" id = 'name'><br>
+				</div>
+				<div style="margin: auto;padding: 10px; text-align: center;">
+				<input type="submit" value="Вход" onclick="login()">
+				</div>
+			</div>
+	<script src="login.js"></script>
+	</body> 
+</html> 

@@ -1,0 +1,83 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="user-scalable=no">
+        <title>Tetris</title>
+    </head>
+    <body onload="load()" style="background-image: url('login_background.jpg'); background-size: cover;background-position: center">
+        <div style="display:none;">
+            <img id="atlas"
+                 src="blockAtlas.png">
+        </div>
+        <div style="height: 100%;
+                    position: fixed;
+                    z-index: 1;
+                    top: 0;
+                    overflow-x: hidden;
+                    padding-top: 20px;
+                    left: 0;
+                    width: 40%;" >
+            <div style="position: absolute;
+                        left: 0;
+                        transform: translate(0%, 0);
+                        background-color: rgba(173, 216, 230, 0.7);
+                        border-radius: 10px;
+                        padding: 10px;
+                        margin-left: 5%">
+                <div>
+                    <label>Игрок:</label>
+                    <label id='playerName'><br></label>
+                </div>
+                <div>
+                    <label>Текущий уровень:</label>
+                    <label id="currLevel">1</label>
+                </div>
+                <div>
+                    <label>Счет:</label>
+                    <label id="currScore">0</label>
+                </div>
+                <div>
+                    <label>Следующая фигура:</label><br>
+                    <canvas id="nextBlockCanvas" style="border: solid;"></canvas>
+                </div>
+            </div>
+
+
+            <div style="position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        transform: translate(0%, -50%);
+                        background-color: rgba(173, 216, 230, 0.7);
+                        border-radius: 10px;
+                        padding: 10px;
+                        margin-left: 5%">
+                <label>Клавиши дял управления:</label><br>
+                <label>Стрелка влево - перемещение фигуры влево</label><br>
+                <label>Стрелка вправо - перемещение фигуры вправо</label><br>
+                <label>Пробел/стрелка вниз - "уронить" фигуру</label><br>
+                <label>Стрелка вверх - поворот фигуры по часовой стрелке</label><br>
+                <div  style="margin: auto;padding: 10px; text-align: center;">
+                    <input type="submit" value="Выход" onclick="window.location='index.html'">
+                </div>
+            </div>
+        </div>
+        <div style="position: fixed;
+                    z-index: 1;
+                    top: 0;
+                    overflow-x: hidden;
+                    padding-top: 20px;
+                    right: 0;
+                    width: 60%;
+                    height: 100vh;">
+
+            <canvas id="canvas" style="border: solid;"></canvas>
+            <div>
+                <button onclick="buttonLeft()" style="height: 10vh;width:12vw">left</button>
+                <button onclick="buttonRight()" style="height: 10vh;width:12vw">right</button>
+                <button onclick="buttonUp()" style="height: 10vh;width:12vw">up</button>
+                <button onclick="buttonDown()" style="height: 10vh;width:12vw" >down</button>
+            </div>
+        </div>
+        <script src="main.js"></script>
+    </body>
+</html>
