@@ -1,0 +1,71 @@
+<table >
+
+<tr class="table-header" >
+    <th ><div style="padding: 8.5px 0">Фото</div></th>
+    <th ><div class="sort" id="ln">Фамилия</div></th>
+    <th><div class="sort" id="fn">Имя</div></th>
+    <th><div class="sort" id="mn">Отчество</div></th>
+    <th><div class="sort" id="bd">Дата рождения</div></th>
+    <th><div class="sort" id="em">Email</div></th>
+    <th><div class="sort" id="rl">Роль</div></th>
+    <th><div class="sort" id="st">Статус</div></th>
+</tr>
+<%users.forEach((user,id)=>{%>
+<tr class="row" id="<%='row'+user.id%>" >
+    <td>
+        <div class="table-photo">
+            <img src="<%=user.avatar%>">
+        </div>
+    </td>
+
+    <td>
+        <span><%=user.lastname%></span>
+        <div class="editdiv">
+            <input type="text" value="<%=user.lastname%>">
+        </div>
+    </td>
+    <td>
+        <span><%=user.firstname%></span>
+        <div class="editdiv">
+            <input type="text" value="<%=user.firstname%>">
+        </div>
+    </td>
+    <td>
+        <span><%=user.midname%></span>
+        <div class="editdiv">
+            <input type="text" value="<%=user.midname%>">
+        </div>
+    </td>
+    <td>
+        <span><%=user.birthday?new Date(user.birthday).toLocaleDateString():options.default%></span>
+        <div class="editdiv">
+            <input type="date" class="date" value="<%=user.birthday%>">
+        </div>
+    </td>
+    <td>
+        <span><%=user.email%></span>
+        <div class="editdiv">
+            <input type="text" value="<%=user.email%>">
+        </div>
+    </td>
+    <td>
+        <span><%=options.role[user.role]%></span>
+        <div class="editdiv">
+            <select class="form-select select" aria-label="Роль"><%for(let key of Object.keys(options.role)) {%>
+                <option value="<%=key%>" <%if(key===user.role){%>selected<%}%>><%=options.role[key]%></option>
+                <%}%>
+            </select>
+        </div>
+    </td>
+    <td>
+        <span><%=options.status[user.status]%></span>
+        <div class="editdiv">
+            <select class="form-select select" aria-label="Статус"><%for(let key of Object.keys(options.status)) {%>
+                <option value="<%=key%>" <%if(key===user.status){%>selected<%}%>><%=options.status[key]%></option>
+                <%}%>
+            </select>
+        </div>
+    </td>
+</tr>
+<%})%>
+</table>

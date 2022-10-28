@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<%- include('../partials/head.ejs'); %>
+<body>
+<%if (gulp){%>
+  <script src="/assets/userlist.js"></script>
+<%}%>
+<%- include('../partials/header.ejs'); %>
+  <nav>
+    <%- include('../partials/search.ejs'); %>
+
+    <div class="table-title">
+      <span>Все пользователи</span>
+    </div>
+
+    <div style="width: 56px"></div>
+  </nav>
+  <div class="dropdown">
+    <div>
+      <p id="edit">Редактировать</p>
+      <p id="friends">Список друзей</p>
+      <p id="news">Лента новостей</p>
+    </div>
+  </div>
+<%- include('../partials/saveModal.ejs'); %>
+  <div class="users">
+
+  </div>
+</body>
+</html>
