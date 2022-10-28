@@ -1,0 +1,12 @@
+<div onmouseleave="bookDropMenuHide(<%=data.id%>)"  class="w3-bar-item w3-right padding-l-r-0" style="position: relative; margin-right: 20px">
+    <div class="w3-bar-item w3-right w3-dropdown-click padding-l-r-0" style="<%if(bookPage){%> margin-right: 10px<%}%>">
+        <i class="fa fa-bars w3-button " onclick="bookDropMenuShow(<%=data.id%>)"></i>
+    </div>
+    <div class="w3-bar-item w3-right" style="position: absolute; transform: translate(-152px,15px)">
+        <div id="bookDropMenu<%=data.id%>" class=" w3-dropdown-content w3-bar-block w3-border w3-round"
+             onmouseleave="bookDropMenuHide(<%=data.id%>)">
+            <%if(bookPage){%><p onclick="location.href='edit?id=<%=data.id%>'" class="w3-bar-item w3-button margin-t-b-0">Изменить</p><%}%>
+            <p onclick='deleteShow(<%=data.id%>)' class="w3-bar-item w3-button margin-t-b-0">Удалить</p>
+        </div>
+    </div>
+</div>

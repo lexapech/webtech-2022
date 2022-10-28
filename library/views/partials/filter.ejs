@@ -1,0 +1,25 @@
+<div id="filter" class="w3-modal ">
+    <div class="w3-modal-content w3-card-4 w3-animate-top w3-round">
+        <div class="w3-container">
+            <span onclick="filterHide()"
+            class="w3-button w3-display-topright w3-round w3-large">&times;</span>
+            <div class="w3-container" style="padding-bottom: 20px;padding-top: 40px;">
+                <input class="w3-check" type="checkbox" id="available">
+                <label>Есть в наличии</label>
+            </div>
+            <div class="w3-container" style="padding-bottom: 40px;padding-top: 20px;">
+                <input class="w3-check" type="checkbox" id="expired">
+                <label>Возврат просрочен</label>
+            </div>
+            <div class="w3-container">
+                <div class="w3-container w3-left margin-l-r-auto" style="margin-bottom: 20px;margin-top: 20px">
+                    <input class="w3-button w3-border" type="button" value="Отмена" onclick="filterHide()">
+                </div>
+                <div class="w3-container w3-right margin-l-r-auto" style="margin-bottom: 20px;margin-top: 20px">
+                    <input class="w3-button w3-border" type="button" value="Применить" onclick="filterHideApply()">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

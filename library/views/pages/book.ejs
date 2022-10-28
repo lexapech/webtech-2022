@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <%- include('../partials/head'); %>
+        <style>
+
+        </style>
+    </head>
+    <body>
+        <script src="/js/book.js"></script>
+        <script src="/js/dropmenu.js"></script>
+        <%- include('../partials/header',{showReturn:true}); %>
+        <%- include('../partials/giveModal'); %>
+        <%- include('../partials/deleteModal'); %>
+
+        <div class="w3-border w3-light-gray width" id="book-container">
+
+            <p class="w3-large w3-center bold"><%=data.title%></p><br>
+            <div class="w3-bar">
+                <%- include('../partials/dropMenu',{data:data, bookPage:true}); %>
+                <img src="/images/book.jpg" class="w3-bar-item book-image">
+                <div class="w3-bar-item">
+                    <p>Автор: <%=data.author%></p>
+                    <p>Дата выпуска: <%=new Date(data.publication_date).toLocaleDateString()%></p>
+                    <p><%if(data.available==="true") {%>В наличии<%}
+                        else {%>Выдана: <%=data.reader.name%> до <span <%if(new Date(data.reader.return_date) < Date.now())
+                        {%>style="color: red" <%}%>><%=new Date(data.reader.return_date).toLocaleDateString()%></span><%}%></p>
+                    <div>
+                        <input type="button" class="w3-border w3-button"
+                           <%if(data.available==="true") {%>value="Выдать" onclick="showGiveModal(<%=data.id%>)" <%}
+                            else {%>value="Вернуть" onclick="ret(<%=data.id%>)"<%}%>>
+                    </div>
+                </div>
+            </div>
+                <p class="w3-large w3-center">Описание</p>
+                <p style="max-width: 90vw; padding: 10px; margin-bottom:10vh"><%=data.description%></p>
+        </div>
+
+    </body>
+</html>
