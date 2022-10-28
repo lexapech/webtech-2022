@@ -1,0 +1,25 @@
+{
+  "table_name": "news",
+  "attrib": [
+    "id",
+    "firstname",
+    "midname",
+    "lastname",
+    "birthday",
+    "email",
+    "role",
+    "status"
+  ],
+  "data": [
+    {
+      "id": "1",
+      "firstname": "alex",
+      "midname" : "alex",
+      "lastname" : "alex",
+      "birthday": "11-11-1111",
+      "email": "example.org",
+      "role": "admin",
+      "status": "active"
+    }
+  ]
+}
