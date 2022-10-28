@@ -1,0 +1,50 @@
+<% let label
+let url
+if(signup) {
+    label ="Зарегистрироваться"
+    url = "/signup"
+}
+else {
+    label ="Войти"
+    url = "/login/password"
+}
+ %>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body onload="load()">
+<script src="/js/login.js"></script>
+<%- include('../partials/header',{showReturn:false}); %>
+<div style="margin:auto; height: 85%">
+    <div class="w3-display-middle w3-card-4 w3-light-gray" style="width: min(50vh,100vw);">
+            <%if(signup===true){%>
+                <div class="w3-container w3-left margin-l-r-auto" style="margin-bottom: 20px;margin-top: 20px">
+                    <i class="fa fa-arrow-left w3-button w3-border" onclick="location='/login'">
+                    </i>
+                </div>
+            <%}%>
+            <section class="w3-container padding-t-b-20">
+                <label for="username">Имя пользователя</label>
+                <input class="w3-input" id="username" name="username" type="text" autocomplete="off" autofocus>
+            </section>
+            <section class="w3-container" style="padding-top: 20px">
+                <label for="current-password">Пароль</label>
+                <input class="w3-input" id="current-password" name="password" type="password" autocomplete="off">
+            </section>
+            <section class="w3-container"style="padding-bottom: 0;padding-top: 0">
+                <p id="message" style="min-height: 30px;color: red"></p>
+            </section>
+            <div class="w3-container w3-center margin-l-r-auto" style="padding-bottom: 20px">
+                <button class="w3-button w3-border" type="submit" onclick="save();login('<%=url%>')"><%=label%></button>
+            </div>
+            <%if(signup!==true){%>
+                <div class="w3-container w3-center margin-l-r-auto" style="margin-bottom: 20px">
+                    <a href="/signup">Зарегистрироваться</a>
+                </div>
+            <%}%>
+    </div>
+</div>
+</body>
+</html>

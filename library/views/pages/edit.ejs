@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <%- include('../partials/head'); %>
+    <style>
+        @media only screen and (max-width: 1026px) {
+            #back {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<script src="/js/book.js"></script>
+<script src="/js/edit.js"></script>
+<%- include('../partials/header',{showReturn:true}); %>
+<%- include('../partials/giveModal'); %>
+<%- include('../partials/deleteModal'); %>
+
+<div class="w3-border w3-light-gray width" id="edit-container">
+
+    <div class="w3-container">
+        <label>Название</label>
+        <input class="w3-input w3-large w3-center" type="text" id="title" value="<%=data.title%>">
+    </div>
+    <div class="w3-bar" >
+        <img src="/images/book.jpg" class="w3-bar-item book-image" for="file">
+        <div class="w3-bar-item">
+            <div class="w3-container">
+                <label>Автор</label>
+                <input class="w3-input" type="text" id="authorName" value="<%=data.author%>">
+            </div>
+            <div class="w3-container">
+                <label>Дата выпуска</label>
+                <input class="w3-input" type="date" id="pubDate" value="<%=data.publication_date%>">
+            </div>
+        </div>
+    </div>
+    <div>
+        <p class="w3-large w3-center">Описание</p>
+        <div class="w3-container">
+            <textarea id="description" style="height: 100%;" class="w3-input" name="Desc" cols="40" rows="10" ><%=data.description%></textarea>
+        </div>
+
+    </div>
+</div>
+<div class="w3-bar w3-teal width" id="edit-footer">
+    <div class="w3-bar-item w3-left margin-t-b-2vh">
+        <input type="button" onclick='location.href="/books/<%=data.id%>"' class="w3-border w3-button" value="Отмена">
+    </div>
+    <div class="w3-bar-item w3-right margin-t-b-2vh" >
+        <input type="button" class="w3-border w3-button"  value="Сохранить"
+               onclick="updateBook(<%if(data.id==='new'){%>'new'<%}else{%><%=data.id%><%}%>)">
+    </div>
+</div>
+
+</body>
+</html>

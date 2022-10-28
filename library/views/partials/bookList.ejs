@@ -1,0 +1,25 @@
+<%
+    books = books.filter((x)=>( !filter.available && !filter.expired) ||
+                                (filter.available && x.available==='true') ||
+                                (filter.expired && new Date(x.reader.return_date) < Date.now()))
+    if(filter.sort) {books=books.sort((a,b) => b.title.localeCompare(a.title))}
+for (let i=0; i<books.length;i++) {
+    let data = books[i]
+
+%>
+<li class="w3-bar w3-card-4 padding-l-r-0" <%if(i<books.length-1){%>style="margin-bottom: 0%"<%}%> >
+
+    <%- include('../partials/dropMenu',{data:data,bookPage:false}); %>
+    <div class="w3-bar w3-bar-item padding-l-r-0" onclick="location.href='books/<%=data.id%>'" style="width: 80%; cursor: pointer;">
+        <img src="images/book.jpg" class="w3-bar-item w3-circle" style="max-width:30%">
+        <div class="w3-bar-item" style="width: 70%; ">
+
+            <span class="title"><%=data.title%></span><br>
+            <span>Автор: <%=data.author%></span><br>
+            <span>Дата выпуска: <%=new Date(data.publication_date).toLocaleDateString()%></span><br>
+            <span><%if(data.available==="true") {%>В наличии<%}else {%>Нет в наличии<%}%><br></span>
+            <%if(data.available!=="true" && new Date(data.reader.return_date) < Date.now()) {%><span style="color: red" > Возврат просрочен</span><%}%>
+        </div>
+    </div>
+</li>
+<%}%>

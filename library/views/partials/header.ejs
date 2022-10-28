@@ -1,0 +1,20 @@
+<header class="w3-container w3-teal w3-bar padding-l-r-0" >
+    <%if(showReturn===true) {%>
+        <i class="fa fa-arrow-left w3-button w3-border w3-bar-item w3-left" style="margin-top: 20px; margin-left: 10px" onclick="location='/'">
+            <span id="back">На Главную</span>
+        </i>
+    <%}%>
+    <h3 class="w3-bar-item w3-left" ><%=pageTitle%></h3>
+    <div onmouseleave="userDropMenuHide()"  class="w3-bar-item w3-right padding-l-r-0" style="position: relative">
+        <div class="w3-right w3-dropdown-click padding-l-r-0 " style="margin-right: 20px">
+            <p style="font-size: 15px" onclick="userDropMenuShow()"><%=username%></p>
+        </div>
+        <div class="w3-bar-item w3-right" style="position: fixed; z-index: 1; transform: translate(-150px,30px)">
+            <div id="userDropMenu" class="w3-light-gray w3-dropdown-content w3-bar-block w3-border w3-round "
+                 onmouseleave="userDropMenuHide()">
+                <p onclick="location.href='/logout'" class="w3-bar-item w3-button margin-t-b-0">Выйти</p>
+            </div>
+        </div>
+    </div>
+
+</header>
