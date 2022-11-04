@@ -1,0 +1,23 @@
+{ "columns":1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json",
+         "target":"cactus.tsj"
+        }
+    },
+ "image":".\/cactus.png",
+ "imageheight":31,
+ "imagewidth":20,
+ "margin":0,
+ "name":"cactus",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.9.2",
+ "tileheight":31,
+ "tilewidth":20,
+ "transparentcolor":"#408000",
+ "type":"tileset",
+ "version":"1.9"
+}
