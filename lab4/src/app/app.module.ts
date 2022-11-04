@@ -6,7 +6,6 @@ import * as Rollbar from 'rollbar'; // When using Typescript < 3.6.0.
 import { BrowserModule } from '@angular/platform-browser';
 import {
   Injectable,
-  Injector,
   InjectionToken,
   NgModule,
   ErrorHandler, Inject
@@ -20,6 +19,9 @@ import {AppRoutingModule} from "./app-routing.module";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import { SignupComponent } from './signup/signup.component';
+import {MatIconModule} from "@angular/material/icon";
+import { MainComponent } from './main/main.component';
+import {MatListModule} from "@angular/material/list";
 
 const rollbarConfig = {
   accessToken: 'ad5ead79d3a24da9855f883a57ca970c',
@@ -43,8 +45,8 @@ export function rollbarFactory() {
 export const RollbarService = new InjectionToken<Rollbar>('rollbar');
 
 @NgModule({
-  imports: [BrowserModule, RouterOutlet, BrowserAnimationsModule, MatSliderModule, AppRoutingModule, MatInputModule, MatButtonModule],
-  declarations: [ AppComponent, SigninComponent, SignupComponent ],
+    imports: [BrowserModule, RouterOutlet, BrowserAnimationsModule, MatSliderModule, AppRoutingModule, MatInputModule, MatButtonModule, MatIconModule, MatListModule],
+  declarations: [ AppComponent, SigninComponent, SignupComponent, MainComponent ],
   bootstrap: [ AppComponent ],
   providers: [
     { provide: ErrorHandler, useClass: RollbarErrorHandler },
