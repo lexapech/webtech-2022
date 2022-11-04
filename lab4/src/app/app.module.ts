@@ -13,6 +13,13 @@ import {
 } from '@angular/core';
 import { AppComponent } from './app.component';
 import {RouterOutlet} from "@angular/router";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatSliderModule} from "@angular/material/slider";
+import { SigninComponent } from './signin/signin.component';
+import {AppRoutingModule} from "./app-routing.module";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
+import { SignupComponent } from './signup/signup.component';
 
 const rollbarConfig = {
   accessToken: 'ad5ead79d3a24da9855f883a57ca970c',
@@ -36,8 +43,8 @@ export function rollbarFactory() {
 export const RollbarService = new InjectionToken<Rollbar>('rollbar');
 
 @NgModule({
-  imports: [BrowserModule, RouterOutlet],
-  declarations: [ AppComponent ],
+  imports: [BrowserModule, RouterOutlet, BrowserAnimationsModule, MatSliderModule, AppRoutingModule, MatInputModule, MatButtonModule],
+  declarations: [ AppComponent, SigninComponent, SignupComponent ],
   bootstrap: [ AppComponent ],
   providers: [
     { provide: ErrorHandler, useClass: RollbarErrorHandler },

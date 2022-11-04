@@ -1,0 +1,36 @@
+@back-col: #E7E7E7;
+@table-col: #D9D9D9;
+
+.space-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.vertical-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+}
+
+.title > img {
+  max-height: 50px;
+  margin: 10px;
+}
+.title{
+  background-color: @back-col;
+  display: flex;
+  justify-content: flex-start;
+}
+.title > div {
+  font-size: 20px;
+  text-align: center;
+  margin: 0 10px;
+  .vertical-center();
+}
+
+.content {
+  width:100%;
+  height: calc(100vh - 70px);
+  background-color: @table-col;
+}
