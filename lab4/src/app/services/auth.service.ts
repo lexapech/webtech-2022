@@ -14,7 +14,6 @@ export class AuthService {
     private loggedUser: User | null = null;
     private loggedUser$!: Subject<User>;
     private isAuth : boolean | undefined =undefined
-    private counter=0
   constructor(private http: HttpClient) {
     this.currentUser;
 
