@@ -3,11 +3,12 @@ import {storage} from "../app.js";
 import {userConverter, search, friendInfo,getGenitive} from "../utils.js";
 import ru from '../../../data/ru.json' assert {type:'json'}
 import * as url from "url";
+import {adminAuth} from "./auth.js";
 
 const __dirname = url.fileURLToPath(new URL('../../client', import.meta.url));
 const router = express.Router()
 
-router.get('/users', (req, res) => {
+router.get('/users',adminAuth ,(req, res) => {
     if (req.query.id) {
         res.end(JSON.stringify({users: storage.select((row) => row.id===req.query.id, storage.users).map(userConverter)}))
     }
@@ -18,7 +19,7 @@ router.get('/users', (req, res) => {
     }
 })
 
-router.get('/friends', (req, res) => {
+router.get('/friends',adminAuth , (req, res) => {
     console.log(req.path)
     let list=[]
     let name=null
@@ -36,7 +37,7 @@ router.get('/friends', (req, res) => {
     res.end(JSON.stringify({users: list,name:name}))
 })
 
-router.get('/news', (req, res) => {
+router.get('/news',adminAuth , (req, res) => {
     console.log(req.path)
     let news=[]
     let name=null
@@ -71,21 +72,21 @@ router.get('/news', (req, res) => {
 })
 
 
-router.get('/users/options', (req, res) => {
+router.get('/users/options',adminAuth , (req, res) => {
     res.end(JSON.stringify(ru))
 })
-router.get('/users/template', (req, res) => {
+router.get('/users/template',adminAuth , (req, res) => {
     console.log(__dirname)
     res.sendFile(__dirname+"/views/partials/usersTemplate.ejs")
 })
 
-router.post('/users/edit', (req, res) => {
+router.post('/users/edit',adminAuth , (req, res) => {
     let newuser=req.body
     //console.log(newuser)
     storage.update(newuser,(r)=>r.id===newuser.id,storage.users)
     res.end(JSON.stringify({user: storage.select((r) => r.id===newuser.id, storage.users).map(userConverter)[0]}))
 })
-router.post('/news/edit', (req, res) => {
+router.post('/news/edit',adminAuth , (req, res) => {
     let post=req.body
     storage.update(post,(row)=>row.id===post.id,storage.news)
     res.end(JSON.stringify(post))

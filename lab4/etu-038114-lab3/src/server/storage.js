@@ -2,12 +2,14 @@ import fs from "fs";
 import users from "../../data/user.json" assert {type: "json"}
 import friends from "../../data/friends.json" assert {type: "json"}
 import news from "../../data/news.json" assert {type: "json"}
+import credentials from "../../data/credentials.json" assert {type: "json"}
 
 class Storage {
     constructor() {
         this.users=users
         this.friends = friends
         this.news = news
+        this.credentials = credentials
     }
 
     writeJson(obj, file) {
@@ -23,6 +25,7 @@ class Storage {
         newrow.id=newId.toString()
         into.data[into.data.length] = newrow
         this.writeJson(into,into.table_name)
+        return newrow
     }
 
     select(where, from) {

@@ -1,0 +1,14 @@
+<div class="main-content">
+    <div class="sidebar">
+        <mat-list class="nav">
+            <mat-list-item><button mat-button class="nav-button" routerLink="/me"><mat-icon>account_circle</mat-icon> МОЯ СТРАНИЦА</button></mat-list-item>
+            <mat-list-item><button mat-button class="nav-button" routerLink="/news"><mat-icon>web_asset</mat-icon> НОВОСТИ</button></mat-list-item>
+            <mat-list-item><button mat-button class="nav-button" routerLink="/messages"><mat-icon>chat_bubble</mat-icon> СООБЩЕНИЯ</button></mat-list-item>
+            <mat-list-item><button mat-button class="nav-button" routerLink="/friends"><mat-icon>group</mat-icon> ДРУЗЬЯ</button></mat-list-item>
+        </mat-list>
+    </div>
+    <div style="height:100%; flex: 71%; ">
+        <router-outlet></router-outlet>
+    </div>
+<div style="width:20%;height:100%;flex: 9%;"></div>
+</div>

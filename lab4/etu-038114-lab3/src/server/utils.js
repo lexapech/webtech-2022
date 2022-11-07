@@ -47,6 +47,36 @@ let search = (row,pattern) => {
     return false
 }
 
+let createUser =(user) => {
+    return {
+        firstname: user.firstname,
+        midname: user.midname,
+        lastname: user.lastname,
+        birthday: user.birthday,
+        email: user.email,
+        avatar: null,
+        role: "user",
+        status: "unverified"
+    }
+}
+
+let getUserInfo =(user) => {
+    return {
+        firstname: user.firstname,
+        midname: user.midname,
+        lastname: user.lastname,
+        birthday: user.birthday,
+        avatar: user.avatar.startsWith("http")?user.avatar: 'http://localhost:3000/'+ user.avatar,
+        status: user.status
+    }
+}
+let userFriendInfo = (userInfo) => {
+    return {id:"id"+userInfo.id,
+        firstname:userInfo.firstname,
+        lastname: userInfo.lastname,
+        avatar: userInfo.avatar.startsWith("http")?userInfo.avatar: 'http://localhost:3000/'+ userInfo.avatar}
+}
+
 let friendInfo = (userInfo) => {
     return {id:userInfo.id,firstname:userInfo.firstname,lastname:userInfo.lastname,avatar:userInfo.avatar,banned: userInfo.status==='banned'}
 }
@@ -59,13 +89,9 @@ let getGenitive = (id) => {
             middle: user.midname,
             last: user.lastname
         };
-        return petrovich(person, 'genitive').first;
+        return petrovich(person, 'genitive');
     }
     return null;
 }
 
-
-export {getGenitive}
-export {friendInfo}
-export {userConverter}
-export {search}
+export {search,getUserInfo,userFriendInfo,userConverter,friendInfo,getGenitive,createUser}

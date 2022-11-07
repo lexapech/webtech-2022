@@ -53,6 +53,7 @@ let getUsers = (search) =>{
 
 }
 
+
 let getOptions = () => {
     return $.get("/api/users/options");
 }
@@ -61,6 +62,8 @@ let getTemplate = () => {
 }
 
 $(document).ready(async function () {
+
+
     let query = location.search
     let params = new URLSearchParams(query)
     if(params.get('id')) {

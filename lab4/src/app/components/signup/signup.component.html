@@ -7,34 +7,38 @@
     <span style="width:100px"></span>
 </div>
 <div class="vertical-center" style="width:100%;height:calc(100% - 48px); align-items: center">
-    <div class="form">
-        <form>
+    <div class="form" >
+        <form [formGroup]="signupForm">
             <mat-form-field class="input-field" appearance="standard">
                 <mat-label>Фамилия</mat-label>
-                <input type="text" matInput>
+                <input type="text" matInput formControlName="lastname">
             </mat-form-field>
             <mat-form-field class="input-field" appearance="standard">
                 <mat-label>Имя</mat-label>
-                <input type="text" matInput>
+                <input type="text" matInput formControlName="firstname">
             </mat-form-field>
             <mat-form-field class="input-field" appearance="standard">
                 <mat-label>Отчество</mat-label>
-                <input type="text" matInput>
+                <input type="text" matInput formControlName="midname">
+            </mat-form-field>
+            <mat-form-field class="input-field" appearance="standard">
+                <mat-label>Дата рождения</mat-label>
+                <input type="date" matInput formControlName="birthday">
             </mat-form-field>
             <mat-form-field class="input-field" appearance="standard">
                 <mat-label>Email</mat-label>
-                <input type="email" matInput>
+                <input type="email" matInput formControlName="email">
             </mat-form-field>
             <mat-form-field class="input-field" appearance="standard">
                 <mat-label>Пароль</mat-label>
-                <input type="password" matInput>
+                <input type="password" matInput formControlName="password">
             </mat-form-field>
             <mat-form-field class="input-field" appearance="standard">
                 <mat-label>Подтвердите пароль</mat-label>
-                <input type="password" matInput>
+                <input type="password" matInput formControlName="password2">
             </mat-form-field>
             <div class="space-between" style="margin: 20px 0">
-                <button mat-raised-button color="primary">РЕГИСТРАЦИЯ</button>
+                <button mat-raised-button type="submit" (click)="signup()" color="primary">РЕГИСТРАЦИЯ</button>
             </div>
         </form>
     </div>

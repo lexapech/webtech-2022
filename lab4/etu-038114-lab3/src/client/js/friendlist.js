@@ -13,12 +13,14 @@ let friendsTemplate = `<%list.forEach((user)=>{%>
     </div>
     <%})%>`
 
+
+
 let getFriends = (all) =>{
     let query = location.search
     console.log(query)
     let params = new URLSearchParams(query)
     console.log(params)
-    $.get(`/api/friends?id=${params.get('id')}&all=${all}`,(list,resStatus)=>{
+    $.get(`/api/friends?id=${params.get('id')}&all=${all}`,{},(list,resStatus)=>{
         if (resStatus!=='success') return
         list=JSON.parse(list)
         friendList=list.users
@@ -29,6 +31,8 @@ let getFriends = (all) =>{
 }
 
 $(document).ready(function () {
+
+
     getFriends(false)
 
     $(".title").click(function(){

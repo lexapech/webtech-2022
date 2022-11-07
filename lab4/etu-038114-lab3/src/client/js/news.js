@@ -41,6 +41,7 @@ let postTemplate = `<br>
     </div>
 </div><%})%>`
 
+
 let getNews = (all=false) =>{
     let query = location.search
 
@@ -57,6 +58,8 @@ let getNews = (all=false) =>{
 }
 
 $(document).ready(function () {
+
+
     getNews(false)
 
     $(".title").click(function(){

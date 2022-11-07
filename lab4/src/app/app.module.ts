@@ -14,14 +14,25 @@ import { AppComponent } from './app.component';
 import {RouterOutlet} from "@angular/router";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatSliderModule} from "@angular/material/slider";
-import { SigninComponent } from './signin/signin.component';
+import { SigninComponent } from './components/signin/signin.component';
 import {AppRoutingModule} from "./app-routing.module";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
-import { SignupComponent } from './signup/signup.component';
+import { SignupComponent } from './components/signup/signup.component';
 import {MatIconModule} from "@angular/material/icon";
-import { MainComponent } from './main/main.component';
+import { MainComponent } from './components/main/main.component';
 import {MatListModule} from "@angular/material/list";
+import { NewsComponent } from './components/news/news.component';
+import { ProfileComponent } from './components/profile/profile.component';
+import { MessagesComponent } from './components/messages/messages.component';
+import { FriendsComponent } from './components/friends/friends.component';
+import { DialogComponent } from './components/dialog/dialog.component';
+import {MatMenuModule} from "@angular/material/menu";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import {AuthService} from "./services/auth.service";
+import {AuthGuardService} from "./services/auth-guard.service";
+import {AuthInterceptor} from "./services/auth-interceptor.service";
 
 const rollbarConfig = {
   accessToken: 'ad5ead79d3a24da9855f883a57ca970c',
@@ -45,10 +56,17 @@ export function rollbarFactory() {
 export const RollbarService = new InjectionToken<Rollbar>('rollbar');
 
 @NgModule({
-    imports: [BrowserModule, RouterOutlet, BrowserAnimationsModule, MatSliderModule, AppRoutingModule, MatInputModule, MatButtonModule, MatIconModule, MatListModule],
-  declarations: [ AppComponent, SigninComponent, SignupComponent, MainComponent ],
+    imports: [HttpClientModule,BrowserModule, RouterOutlet, BrowserAnimationsModule, MatSliderModule, AppRoutingModule, MatInputModule, MatButtonModule, MatIconModule, MatListModule, MatMenuModule, FormsModule, ReactiveFormsModule],
+  declarations: [ AppComponent, SigninComponent, SignupComponent, MainComponent, NewsComponent, ProfileComponent, MessagesComponent, FriendsComponent, DialogComponent ],
   bootstrap: [ AppComponent ],
   providers: [
+      AuthService,
+      AuthGuardService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
     { provide: ErrorHandler, useClass: RollbarErrorHandler },
     { provide: RollbarService, useFactory: rollbarFactory }
   ]

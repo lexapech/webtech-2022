@@ -1,0 +1,26 @@
+<div class="panel" style="padding: 0;width: 70%">
+    <div *ngFor="let friend of friends;index as i;">
+        <div class="friends-list-entry">
+            <div style="display: flex;gap: 20px;">
+                <img style="width: 80px;height: 80px;border-radius: 50%" [src]=friend.avatar alt="avatar">
+                <div>
+                    <p style="font-size: 14px;margin: 0 0 10px 0">{{friend.firstname+" "+friend.lastname}}</p>
+                    <span><a routerLink="/dialog" [queryParams]="{id:friend.id.replace('id','')}">Написать сообщение</a></span>
+                </div>
+            </div>
+            <div>
+                <!--<mat-icon style="margin: 10px 5px 0 0">more_vert</mat-icon>-->
+                <button mat-icon-button [matMenuTriggerFor]="menu" class="hover">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item>
+                        <span>Удалить из друзей</span>
+                    </button>
+                </mat-menu>
+            </div>
+
+        </div>
+        <mat-divider *ngIf="i<friends.length-1"></mat-divider>
+    </div>
+</div>

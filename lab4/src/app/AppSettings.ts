@@ -1,0 +1,4 @@
+export default class AppSettings {
+    public static API_ENDPOINT="http://localhost:3000/userapi/"
+    public static AUTH_ENDPOINT="http://localhost:3000/api/"
+}

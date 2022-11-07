@@ -1,7 +1,24 @@
 <div class ="title">
-    <img src="/assets/logo.png" alt="">
-    <div>
-        <span>ФСБook</span>
+    <div style="margin-left: 10px">
+        <img src="/assets/logo.png" alt="">
+        <div>
+            <span>ФСБook</span>
+        </div>
+        </div>
+    <div *ngIf="isAuth" class="header-avatar hover"  [matMenuTriggerFor]="menu">
+        <img alt="avatar" [src]=avatar>
+        <mat-menu #menu="matMenu" style="padding: 0">
+            <a href="http://localhost:3000" style="text-decoration: none">
+                <div *ngIf="isAdmin">
+                    <button mat-menu-item >
+                        <span>Администрирование</span>
+                    </button>
+                </div>
+            </a>
+            <button mat-menu-item (click)="logout()">
+                <span>Выйти</span>
+            </button>
+        </mat-menu>
     </div>
 </div>
 

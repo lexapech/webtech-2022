@@ -1,0 +1,47 @@
+<div class="panel" style="margin-top: 15%;display: flex">
+    <div class="avatar-container">
+        <img class="avatar" [src]=userInfo.avatar alt="avatar">
+    </div>
+    <div>
+        <div style="display: flex;">
+            <p style="font-size: 20px">{{userInfo.firstname+" "+userInfo.lastname}}
+                <mat-icon *ngIf="userInfo.status==='active'" >verified</mat-icon></p>
+        </div>
+        <p *ngIf="userInfo.birthday!==''" style="color: gray">День рождения: {{userInfo.birthday}}</p>
+    </div>
+</div>
+<div style="display: flex">
+    <div style="flex: 66%" >
+        <div class="panel" >
+            <div class="photo-list">
+                <img [src]=userInfo.avatar alt="avatar">
+                <img [src]=userInfo.avatar alt="avatar">
+                <img [src]=userInfo.avatar alt="avatar">
+                <img [src]=userInfo.avatar alt="avatar">
+            </div>
+            <div >
+                <button mat-button style="margin-left: 5%">ЗАГРУЗИТЬ ФОТО</button>
+            </div>
+        </div>
+
+        <app-news [Profile]="true"></app-news>
+    </div>
+
+    <div class="panel" style="flex: 33%;height: min-content" >
+        <div style="display: flex">
+            <p>Друзья</p>
+            <p style="margin-left: 10px;color: dimgray">{{friends.length}}</p>
+        </div>
+
+        <div style="display: flex;flex-wrap: wrap;gap: 10px" routerLink="/id1">
+            <div *ngFor="let friend of friends" style>
+                <div style="display: flex;flex-direction: column;align-items: center ">
+                    <img style="width: 64px;height: 64px;border-radius: 50%" [src]=friend.avatar alt="avatar">
+                    <span style="font-size: 12px;color: dimgray;margin-top: 10px">{{friend.firstname}}</span>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
