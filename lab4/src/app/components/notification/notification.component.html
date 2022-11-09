@@ -1,0 +1,9 @@
+<div style="display: flex;align-items: center;gap: 10px;cursor: pointer" routerLink="/dialog" [queryParams]="{id:message.info.id}">
+    <div>
+        <img style="width: 32px;height: 32px;border-radius: 50%" [alt]="message.info.firstname+' '+message.info.lastname" [src]="message.info.avatar">
+    </div>
+    <div>
+        <p style="font-size: 14px;color: lightgray;white-space: nowrap">Новое сообщение от <br>{{message.info.genitive.first+" "+message.info.genitive.last}}</p>
+        <p style="font-size: 14px;color: white">{{message.msg.content}}</p>
+    </div>
+</div>

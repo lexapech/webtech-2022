@@ -60,14 +60,29 @@ let createUser =(user) => {
     }
 }
 
+let postConverter =(content) =>{
+    return {
+        text:content.text,
+        image: content.image?  content.image.startsWith("http")?content.image: 'http://localhost:3000/'+ content.image: null
+    }
+}
+
+
+
 let getUserInfo =(user) => {
     return {
+        id:user.id,
         firstname: user.firstname,
         midname: user.midname,
         lastname: user.lastname,
         birthday: user.birthday,
         avatar: user.avatar.startsWith("http")?user.avatar: 'http://localhost:3000/'+ user.avatar,
-        status: user.status
+        status: user.status,
+        genitive: petrovich({
+            first: user.firstname,
+            middle: user.midname,
+            last: user.lastname
+        }, 'genitive')
     }
 }
 let userFriendInfo = (userInfo) => {
@@ -94,4 +109,4 @@ let getGenitive = (id) => {
     return null;
 }
 
-export {search,getUserInfo,userFriendInfo,userConverter,friendInfo,getGenitive,createUser}
+export {search,getUserInfo,userFriendInfo,userConverter,friendInfo,getGenitive,createUser, postConverter}

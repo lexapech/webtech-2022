@@ -32,7 +32,6 @@ export class AuthService {
   }
 
   clearLogged(){
-      console.log("clear")
       this.loggedUser=null
   }
 

@@ -5,4 +5,20 @@
   background-color: @table-col;
   padding: 10px;
   max-width: 50%;
+  overflow-wrap: break-word;
+  position: relative;
 }
+
+.unread-my::before {
+  content: '';
+  z-index: 0;
+  width: 10px;
+  height: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+  border-radius: 50%;
+  background-color: #31b0d5;
+  left: -20px;
+}
+

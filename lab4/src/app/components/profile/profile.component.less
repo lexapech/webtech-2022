@@ -6,6 +6,28 @@
   height: 145px;
   position: relative;
 }
+.status-indicator{
+  left: calc(50% - 15px);
+  top:0;
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  transform: translate(66px,calc(66px - 15px));
+  z-index: 100;
+  border-radius: 50%;
+  background-color: @back-col;
+}
+.status-indicator:before{
+  content: '';
+  z-index: 0;
+  width: 20px;
+  height: 20px;
+  top: 5px;
+  left: 5px;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #4cae4c;
+}
 
 .avatar {
   position: absolute;
@@ -15,13 +37,13 @@
   border-radius: 50%;
 }
 
-.photo-list > img:first-child{
+.photo-list >div:first-child> img{
   border-radius: 10px 0 0 10px;
 }
-.photo-list > img:last-child{
+.photo-list > div:last-child>img{
   border-radius: 0 10px 10px 0;
 }
-.photo-list > img{
+.photo-list > div{
   width: 24%;
 }
 .photo-list{

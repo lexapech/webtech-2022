@@ -3,6 +3,7 @@ import users from "../../data/user.json" assert {type: "json"}
 import friends from "../../data/friends.json" assert {type: "json"}
 import news from "../../data/news.json" assert {type: "json"}
 import credentials from "../../data/credentials.json" assert {type: "json"}
+import messages from "../../data/message.json" assert {type: "json"}
 
 class Storage {
     constructor() {
@@ -10,6 +11,7 @@ class Storage {
         this.friends = friends
         this.news = news
         this.credentials = credentials
+        this.messages = messages
     }
 
     writeJson(obj, file) {
@@ -19,7 +21,7 @@ class Storage {
 
     insert(data,into) {
         let newrow={}
-        into.attrib.forEach((a)=>newrow[a]=data[a]?data[a]:null)
+        into.attrib.forEach((a)=>newrow[a]=(data[a]!==undefined)?data[a]:null)
         let newId=1
         while (into.data.find((x) => x.id === newId.toString())!==undefined) {newId++}
         newrow.id=newId.toString()

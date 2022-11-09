@@ -6,6 +6,7 @@ import {storage, token as secret} from "../app.js";
 import {createUser} from "../utils.js";
 import jwt from 'jsonwebtoken'
 
+
 function generateAccessToken(username) {
     return jwt.sign(username, secret, { expiresIn: '86400s' });
 }
@@ -19,12 +20,23 @@ let getCookie = (cookie,name)=>{
     return null
 }
 
+function socketAuth(socket,next) {
+    const token = getCookie( socket.request.headers.cookie,"token")
+    if (!token) return next(new Error("Socket Auth failed"))
+    jwt.verify(token, secret, (err, user) => {
+        //console.log(err)
+        if (err) return next(new Error("Socket Auth failed"))
+        socket.user = storage.select((x) => x.email === user.username, storage.users)[0]
+
+        next()
+    })
+}
 
 function adminAuth(req, res, next) {
     const token = getCookie( req.headers['cookie'],"token")
     if (!token) return res.sendStatus(401)
     jwt.verify(token, secret, (err, user) => {
-        console.log(err)
+        //console.log(err)
         if (err) return res.sendStatus(403)
         let _user = storage.select((x)=>x.email===user.username,storage.users)[0]
         if (_user.role!=="admin") return res.sendStatus(403)
@@ -117,4 +129,4 @@ router.get('/api/logged',userAuth, function(req, res, next) {
 
 
 export default router
-export {userAuth,adminAuth}
+export {userAuth,adminAuth,socketAuth}

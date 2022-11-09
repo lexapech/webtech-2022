@@ -1,8 +1,12 @@
 import {Component, OnChanges, OnInit} from '@angular/core';
 import {AuthService} from "./services/auth.service";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import User from "./model/auth/User";
 import {ProfileService} from "./services/profile.service";
+import {SocketsService} from "./services/sockets.service";
+import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
+import {NotificationComponent} from "./components/notification/notification.component";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-root',
@@ -14,14 +18,55 @@ export class AppComponent implements OnInit,OnChanges{
   isAdmin: boolean;
   isAuth: boolean = false;
   loggedUser!: User | null
-  constructor(public authService : AuthService,private router : Router,private profileService : ProfileService) {
+  audio = new Audio("assets/notification.mp3")
+  horizontalPosition: MatSnackBarHorizontalPosition = 'end';
+  verticalPosition: MatSnackBarVerticalPosition = 'bottom';
+
+  notification: Subscription|undefined
+
+  constructor(public authService : AuthService,
+              private router : Router,
+              private profileService : ProfileService,
+              private socketsService : SocketsService,
+              private snackBar: MatSnackBar
+  ) {
+
+
     this.isAdmin=false
 
 
   }
+
+  subscribeMessage() {
+    this.notification?.unsubscribe();
+    this.notification = this.socketsService.message$.subscribe((message=>{
+      if(this.router.url.startsWith("/dialog")) return
+      if(this.loggedUser && this.loggedUser.username?.replace("id","")===message.to) {
+        this.profileService.getUserInfo(message.from).subscribe(x=>{
+          this.audio.play()
+          this.snackBar.openFromComponent(NotificationComponent,{
+            horizontalPosition: this.horizontalPosition,
+            verticalPosition: this.verticalPosition,
+            panelClass: 'snackbar-panel',
+            duration: 3000,
+            data:{info:x,msg:message}
+          })
+
+        })
+
+      }
+    }))
+  }
+
+
+
   logout() {
     this.authService.logout()
     this.isAuth=false;
+    this.socketsService.logout()
+
+    this.notification?.unsubscribe()
+
     this.router.navigate(['/login'])
   }
 
@@ -32,10 +77,14 @@ export class AppComponent implements OnInit,OnChanges{
         this.loggedUser=x
         this.isAdmin=this.loggedUser.isAdmin
         this.isAuth=true;
+        this.socketsService.login()
+        this.subscribeMessage()
       },
       error: () => {
         this.router.navigate(['/login'])
         this.isAuth=false;
+        this.socketsService.logout()
+        this.notification?.unsubscribe()
       }
     })
 
@@ -44,19 +93,25 @@ export class AppComponent implements OnInit,OnChanges{
         next: x=>{
           this.loggedUser=x
           this.isAdmin=this.loggedUser.isAdmin
+
           this.profileService.currentUser.subscribe(x => {
             this.avatar=x.avatar
             this.isAuth=true;
+            this.socketsService.login()
+            this.subscribeMessage()
           })
         },
         error: () => {
           this.isAuth=false;
+          this.socketsService.logout()
+          this.notification?.unsubscribe()
         }
       })
 
     })
 
   }
+
 
   ngOnChanges(): void {
 

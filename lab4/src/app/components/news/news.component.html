@@ -1,36 +1,35 @@
-<div class="panel" style="padding: 0;" [style]="isMine?'':'width: 70%'" >
-    <div style="padding: 10px">
-        <div style="display: flex;justify-content: flex-start;padding: 10px;gap: 20px">
-            <img style="width: 50px;height: 50px;border-radius: 50%" [src]=avatar alt="avatar">
-            <div>
-                <span style="font-size: 14px">DICk name</span><br>
-                <span style="font-size: 14px; color: gray">time</span>
-            </div>
+<div *ngIf="myProfile" class="panel" style="padding: 0;" [style]="isMine?'':'width: 70%'" >
+    <form [formGroup]="postForm" >
+        <input (focus)="buttons.style.display='flex'" formControlName="text" type="text" style="background-color: rgba(0,0,0,0); width: calc(100% - 50px);border: gray;border-radius: 5px;margin: 20px 0 20px 20px;padding: 10px 5px" placeholder="Что у вас нового?">
+        <input #fileSelector (change)="onFileSelected($event)" formControlName="image" type="file" style="display: none">
+        <div #buttons style="display: none;justify-content: space-between;padding: 0 20px 10px 20px">
+        <button mat-icon-button class="hover" (click)="fileSelector.click()"><mat-icon>photo_camera</mat-icon></button>
+        <button mat-raised-button class="hover" color="primary" (click)="createPost()">Опубликовать</button>
         </div>
-        <div style="margin: 0 20px">
-            <p>DICk's NEWS</p>
-            <div style="display: flex;justify-content: center;width:100%">
-                <img style="height: 400px" [src]=avatar alt="avatar">
-            </div>
-        </div>
-
+    </form>
+</div>
+<div class="panel" style="padding: 0 0 10px 0;" [style]="isMine?'':'width: 70%'" >
+    <div *ngIf="news.length===0" style="display: flex;justify-content: center;align-items: center;height: 300px">
+        <p style="font-size: 20px;color: gray">Новостей пока нет.</p>
     </div>
-    <mat-divider></mat-divider>
-    <div style="padding: 10px">
-        <div style="display: flex;justify-content: flex-start;padding: 10px;gap: 20px">
-            <img style="width: 50px;height: 50px;border-radius: 50%" [src]=avatar alt="avatar">
-            <div>
-                <span style="font-size: 14px">DICk name</span><br>
-                <span style="font-size: 14px; color: gray">time</span>
+    <div *ngFor="let post of news;index as i">
+        <div style="padding: 10px">
+            <div style="display: flex;justify-content: flex-start;padding: 10px;gap: 20px">
+                <img style="width: 50px;height: 50px;border-radius: 50%" [src]=post.avatar alt="avatar">
+                <div>
+                    <span style="font-size: 14px">{{post.firstname+" "+post.lastname}}</span><br>
+                    <span style="font-size: 14px; color: gray">{{post.date}}</span>
+                </div>
             </div>
-        </div>
-        <div style="margin: 0 20px">
-            <p>DICk's NEWS</p>
-            <div style="display: flex;justify-content: center;width:100%">
-                <img style="height: 400px" [src]=avatar alt="avatar">
+            <div style="margin: 0 20px">
+                <p *ngIf="post.content.text">{{post.content.text}}</p>
+                <div style="display: flex;justify-content: center;width:100%" *ngIf="post.content.image">
+                    <img style="min-height: 400px;max-height: 400px;max-width: 100%; image-rendering: pixelated" [src]=post.content.image alt="post">
+                </div>
             </div>
-        </div>
 
+        </div>
+        <mat-divider *ngIf="i<news.length-1"></mat-divider>
     </div>
 </div>
 

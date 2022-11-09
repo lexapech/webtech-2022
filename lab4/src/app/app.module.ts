@@ -33,6 +33,11 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AuthService} from "./services/auth.service";
 import {AuthGuardService} from "./services/auth-guard.service";
 import {AuthInterceptor} from "./services/auth-interceptor.service";
+import {SocketIoModule} from "ngx-socket-io";
+import AppSettings from "./AppSettings";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import { NotificationComponent } from './components/notification/notification.component';
 
 const rollbarConfig = {
   accessToken: 'ad5ead79d3a24da9855f883a57ca970c',
@@ -56,12 +61,13 @@ export function rollbarFactory() {
 export const RollbarService = new InjectionToken<Rollbar>('rollbar');
 
 @NgModule({
-    imports: [HttpClientModule,BrowserModule, RouterOutlet, BrowserAnimationsModule, MatSliderModule, AppRoutingModule, MatInputModule, MatButtonModule, MatIconModule, MatListModule, MatMenuModule, FormsModule, ReactiveFormsModule],
-  declarations: [ AppComponent, SigninComponent, SignupComponent, MainComponent, NewsComponent, ProfileComponent, MessagesComponent, FriendsComponent, DialogComponent ],
+    imports: [MatSnackBarModule, SocketIoModule.forRoot(AppSettings.SOCKET_CONFIG), HttpClientModule, BrowserModule, RouterOutlet, BrowserAnimationsModule, MatSliderModule, AppRoutingModule, MatInputModule, MatButtonModule, MatIconModule, MatListModule, MatMenuModule, FormsModule, ReactiveFormsModule, MatButtonToggleModule],
+  declarations: [ AppComponent, SigninComponent, SignupComponent, MainComponent, NewsComponent, ProfileComponent, MessagesComponent, FriendsComponent, DialogComponent, NotificationComponent ],
   bootstrap: [ AppComponent ],
   providers: [
       AuthService,
       AuthGuardService,
+
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,

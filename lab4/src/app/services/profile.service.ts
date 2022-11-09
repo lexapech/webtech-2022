@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import {map, Observable, of, Subject, tap} from "rxjs";
+import {filter, map, Observable, of, Subject, tap} from "rxjs";
 import UserInfo from "../model/user/UserInfo";
 import {HttpClient} from "@angular/common/http";
 import FriendInfo from "../model/user/FriendInfo";
 import AppSettings from "../AppSettings";
+import {NewsService} from "./news.service";
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ import AppSettings from "../AppSettings";
 export class ProfileService {
     _currentUser:UserInfo | null
     currentUser$!: Subject<UserInfo>
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,private newsService : NewsService) {
         this._currentUser=null;
   }
 
@@ -27,6 +28,23 @@ export class ProfileService {
         }
 
     }
+
+    upload(file:File) {
+
+        let formData=new FormData()
+        formData.append("text","")
+        if(file)
+            formData.append("image",file)
+        return this.newsService.post(formData)
+    }
+
+
+    loadPictures(userId:string){
+        return this.newsService.getNews(userId)
+            .pipe(map(posts=>posts.filter(post=>post.content.image)))
+            .pipe(map(posts=>posts.map(post=>post.content.image)))
+    }
+
 
   getUserInfo(userId:string) : Observable<UserInfo> {
       if(userId!=="")
@@ -44,7 +62,7 @@ export class ProfileService {
 
 
   processUserInfo(user:Observable<UserInfo>):Observable<UserInfo> {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const options = { year: 'numeric', month: 'long', day: 'numeric'};
       return user.pipe(map(x=>{
           if(x.birthday)
             { // @ts-ignore

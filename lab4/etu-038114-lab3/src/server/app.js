@@ -2,8 +2,11 @@ import express from 'express'
 import Storage from "./storage.js";
 import indexRouter from './routes/index.js'
 import apiRouter from './routes/api.js'
-import authRouter from './routes/auth.js'
+import authRouter, {socketAuth} from './routes/auth.js'
 import clientRouter from './routes/client.js'
+import SocketServer from "./socketServer.js"
+import fileParser from 'express-fileupload'
+
 import url from "url";
 import path from "path";
 import cors from 'cors'
@@ -45,17 +48,24 @@ app.use(express.static("public"))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
+app.use(fileParser())
+
 app.use(cors(config))
 app.use("/api",apiRouter)
 app.use("/userapi",clientRouter)
 app.use("/",authRouter)
 app.use("/",indexRouter)
 
-
+let socketServer = new SocketServer()
 
 app.listen(3000, ()=>{
     console.log("server started")
 });
+
+
+
+
+export {socketServer}
 export {storage}
 export {distdir}
 export {token}
