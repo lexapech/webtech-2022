@@ -1,14 +1,56 @@
-<div class="panel" style="margin-top: 15%;display: flex">
-    <div class="avatar-container">
-        <img class="avatar" [src]=userInfo.avatar alt="avatar">
-        <span *ngIf="true" class="status-indicator"></span>
-    </div>
-    <div>
-        <div style="display: flex;align-items: center;gap: 10px">
-            <p style="font-size: 20px;">{{userInfo.firstname+" "+userInfo.lastname}}</p>
-                <mat-icon *ngIf="userInfo.status==='active'" >verified</mat-icon>
+<div class="panel" style="margin-top: 15%;display: flex;justify-content: space-between">
+    <div style="display: flex">
+        <div class="avatar-container">
+            <img *ngIf="isMine" [matMenuTriggerFor]="avatarMenu" class="avatar" [src]=userInfo.avatar alt="avatar">
+            <img *ngIf="!isMine" (click)="openAvatar()" class="avatar" [src]=userInfo.avatar alt="avatar">
+            <span *ngIf="false" class="status-indicator"></span>
+            <mat-menu #avatarMenu="matMenu">
+                <button  mat-menu-item>
+                    <span (click)="openAvatar()">Просмотреть фотографию</span>
+                </button>
+                <button (click)="setAvatar=true;imageInput.click()" mat-menu-item>
+                    <span>Изменить фотографию</span>
+                </button>
+            </mat-menu>
         </div>
-        <p *ngIf="userInfo.birthday!==''" style="color: gray">День рождения: {{userInfo.birthday}}</p>
+        <div>
+            <div style="display: flex;align-items: center;gap: 10px">
+                <p style="font-size: 20px;">{{userInfo.firstname+" "+userInfo.lastname}}</p>
+                    <mat-icon *ngIf="userInfo.status==='active'" >verified</mat-icon>
+            </div>
+            <p *ngIf="userInfo.birthday!==''" style="color: gray">День рождения: {{userInfo.birthday}}</p>
+        </div>
+    </div>
+    <div *ngIf="!isMine && isFriend==='false'" style="padding-top:10px;padding-right:10px;display: flex;gap: 10px;height: 40px">
+        <button mat-raised-button (click)="addFriend()" color="primary">ДОБАВИТЬ В ДРУЗЬЯ</button>
+        <button mat-raised-button routerLink="/dialog" [queryParams]="{id:userInfo.id}"><mat-icon>chat_bubble</mat-icon></button>
+    </div>
+    <div *ngIf="!isMine && isFriend==='true'" style="padding-top:10px;padding-right:10px;display: flex;gap: 10px;height: 40px">
+        <button mat-raised-button color="primary" routerLink="/dialog" [queryParams]="{id:userInfo.id}">СООБЩЕНИЕ</button>
+        <button mat-raised-button [matMenuTriggerFor]="menu"><mat-icon>group</mat-icon></button>
+        <mat-menu #menu="matMenu">
+            <button (click)="deleteFriend(userInfo.id)" mat-menu-item>
+                <span>Удалить из друзей</span>
+            </button>
+        </mat-menu>
+    </div>
+    <div *ngIf="!isMine && isFriend==='pending'" style="padding-top:10px;padding-right:10px;display: flex;gap: 10px;height: 40px">
+        <button mat-raised-button color="primary" routerLink="/dialog" [queryParams]="{id:userInfo.id}">СООБЩЕНИЕ</button>
+        <button mat-raised-button [matMenuTriggerFor]="menu"><mat-icon>pending</mat-icon></button>
+        <mat-menu #menu="matMenu">
+            <button (click)="addFriend()" mat-menu-item>
+                <span>Принять заявку</span>
+            </button>
+            <button (click)="deleteFriend(userInfo.id)" mat-menu-item>
+                <span>Отклонить заявку</span>
+            </button>
+
+        </mat-menu>
+    </div>
+    <div *ngIf="!isMine && isFriend==='your'" style="padding-top:10px;padding-right:10px;display: flex;gap: 10px;height: 40px">
+        <button mat-raised-button color="primary" routerLink="/dialog" [queryParams]="{id:userInfo.id}">СООБЩЕНИЕ</button>
+        <button mat-raised-button (click)="deleteFriend(userInfo.id)">Отменить заявку</button>
+
     </div>
 </div>
 <div style="display: flex">
@@ -19,12 +61,12 @@
             </div>
             <div class="photo-list">
                 <div *ngFor="let picture of pictures4" style="cursor: pointer">
-                    <img [src]="picture" style="height: 100%; width: 100%;image-rendering: pixelated; object-fit: cover;max-width: 200px;max-height: 200px">
+                    <img [class]="{'one-image':pictures4.length===1}" (click)="openPhoto(picture)" [src]="picture" style="height: 100%; width: 100%;image-rendering: crisp-edges; object-fit: cover;max-width: 200px;max-height: 200px">
                 </div>
             </div>
             <div >
                 <input type="file" #imageInput (change)="onFileSelected($event)" style="display: none">
-                <button *ngIf="loadPicture" mat-button style="margin-left: 5%" (click)="imageInput.click()">ЗАГРУЗИТЬ ФОТО</button>
+                <button *ngIf="isMine" mat-button style="margin-left: 5%" (click)="setAvatar=false;imageInput.click()">ЗАГРУЗИТЬ ФОТО</button>
             </div>
         </div>
 

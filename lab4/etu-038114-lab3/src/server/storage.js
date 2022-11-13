@@ -4,7 +4,7 @@ import friends from "../../data/friends.json" assert {type: "json"}
 import news from "../../data/news.json" assert {type: "json"}
 import credentials from "../../data/credentials.json" assert {type: "json"}
 import messages from "../../data/message.json" assert {type: "json"}
-
+import pending from "../../data/pending.json" assert {type: "json"}
 class Storage {
     constructor() {
         this.users=users
@@ -12,6 +12,7 @@ class Storage {
         this.news = news
         this.credentials = credentials
         this.messages = messages
+        this.pending = pending
     }
 
     writeJson(obj, file) {

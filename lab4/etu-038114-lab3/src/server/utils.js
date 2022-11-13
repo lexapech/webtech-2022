@@ -67,6 +67,21 @@ let postConverter =(content) =>{
     }
 }
 
+let getPost = (post,author) => {
+    if(!author) return
+    if(author.status==="banned") return
+    if(post.available!==true) return
+    return {id: post.id,
+        authorid: post.authorid,
+        firstname: author.firstname,
+        lastname: author.lastname,
+        avatar: !author.avatar?"http://localhost:3000/user.jpg":( author.avatar.startsWith("http")?author.avatar: 'http://localhost:3000/'+ author.avatar),
+        available:post.available,
+        date: post.date,
+        content: postConverter(post.content)
+    }
+}
+
 
 
 let getUserInfo =(user) => {
@@ -109,4 +124,4 @@ let getGenitive = (id) => {
     return null;
 }
 
-export {search,getUserInfo,userFriendInfo,userConverter,friendInfo,getGenitive,createUser, postConverter}
+export {search,getUserInfo,userFriendInfo,userConverter,friendInfo,getGenitive,createUser, postConverter,getPost}

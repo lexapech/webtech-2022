@@ -1,34 +1,57 @@
 <div style="display: flex">
     <div class="panel" style="padding: 0;flex: 66%">
-        <div *ngFor="let friend of friends;index as i;">
-            <div class="friends-list-entry">
-                <div style="display: flex;gap: 20px;">
-                    <img style="width: 80px;height: 80px;border-radius: 50%" [src]=friend.avatar alt="avatar">
-                    <div>
-                        <p style="font-size: 14px;margin: 0 0 10px 0">{{friend.firstname+" "+friend.lastname}}</p>
-                        <span><a routerLink="/dialog" [queryParams]="{id:friend.id.replace('id','')}">Написать сообщение</a></span>
+        <div *ngIf="(friends.length===0 && all) || (reqs.length===0 && !all)" style="display: flex;height:100%;justify-content: center;align-items: center">
+                <p>{{all?"Друзей нет":"Заявок нет"}}</p>
+        </div>
+        <div *ngIf="all">
+            <div  *ngFor="let friend of friends;index as i;">
+                <div class="friends-list-entry">
+                    <div style="display: flex;gap: 20px;">
+                        <img [routerLink]="'/'+friend.id" style="width: 80px;height: 80px;border-radius: 50%;cursor: pointer" [src]=friend.avatar alt="avatar">
+                        <div>
+                            <p [routerLink]="'/'+friend.id" style="font-size: 14px;margin: 0 0 10px 0;cursor: pointer">{{friend.firstname+" "+friend.lastname}}</p>
+                            <span><a routerLink="/dialog" [queryParams]="{id:friend.id.replace('id','')}">Написать сообщение</a></span>
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <!--<mat-icon style="margin: 10px 5px 0 0">more_vert</mat-icon>-->
-                    <button mat-icon-button [matMenuTriggerFor]="menu" class="hover">
-                        <mat-icon>more_vert</mat-icon>
-                    </button>
-                    <mat-menu #menu="matMenu">
-                        <button mat-menu-item>
-                            <span>Удалить из друзей</span>
+                    <div *ngIf="isMine">
+                        <!--<mat-icon style="margin: 10px 5px 0 0">more_vert</mat-icon>-->
+                        <button mat-icon-button [matMenuTriggerFor]="menu" class="hover">
+                            <mat-icon>more_vert</mat-icon>
                         </button>
-                    </mat-menu>
-                </div>
+                        <mat-menu #menu="matMenu">
+                            <button (click)="deleteFriend(friend.id)" mat-menu-item>
+                                <span>Удалить из друзей</span>
+                            </button>
+                        </mat-menu>
+                    </div>
 
+                </div>
+                <mat-divider *ngIf="i<friends.length-1"></mat-divider>
             </div>
-            <mat-divider *ngIf="i<friends.length-1"></mat-divider>
+        </div>
+        <div *ngIf="!all">
+            <div *ngFor="let friend of reqs;index as i;">
+                <div class="friends-list-entry">
+                    <div style="display: flex;gap: 20px;width: 90%">
+                        <img [routerLink]="'/'+friend.id" style="width: 80px;height: 80px;border-radius: 50%;cursor: pointer" [src]=friend.avatar alt="avatar">
+                        <div style="width: 100%">
+                            <p [routerLink]="'/'+friend.id" style="font-size: 14px;margin: 0 0 10px 0;cursor: pointer">{{friend.firstname+" "+friend.lastname}} хочет добавить вас в друзья</p>
+                           <div style="display:flex;justify-content: flex-start;align-items: center;width: 100%;gap: 20px;padding-top: 10px">
+                            <button (click)="addFriend(friend.id)" mat-raised-button color="primary">ПРИНЯТЬ</button>
+                            <button (click)="deleteFriend(friend.id)" mat-raised-button>ОТКЛОНИТЬ</button>
+                           </div>
+                        </div>
+                    </div>
+
+                </div>
+                <mat-divider *ngIf="i<reqs.length-1"></mat-divider>
+            </div>
         </div>
     </div>
     <div class="panel" style="flex: 33%;height: min-content" >
-        <mat-button-toggle-group [vertical]=true style="width: 100%">
-            <mat-button-toggle>Все друзья</mat-button-toggle>
-            <mat-button-toggle>Заявки</mat-button-toggle>
+        <mat-button-toggle-group value="all" (valueChange)="changePage($event)" [vertical]=true style="width: 100%">
+            <mat-button-toggle value="all">Все друзья <span style="color: dimgray">{{friends.length}}</span></mat-button-toggle>
+            <mat-button-toggle value="req" *ngIf="isMine">Заявки<span style="color: dimgray"> {{reqs.length}}</span></mat-button-toggle>
         </mat-button-toggle-group>
     </div>
 </div>

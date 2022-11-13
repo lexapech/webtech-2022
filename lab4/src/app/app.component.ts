@@ -6,7 +6,8 @@ import {ProfileService} from "./services/profile.service";
 import {SocketsService} from "./services/sockets.service";
 import {MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition} from "@angular/material/snack-bar";
 import {NotificationComponent} from "./components/notification/notification.component";
-import {Subscription} from "rxjs";
+import {debounceTime, Observable, Subject, Subscription} from "rxjs";
+import UserInfo from "./model/user/UserInfo";
 
 @Component({
   selector: 'app-root',
@@ -23,19 +24,32 @@ export class AppComponent implements OnInit,OnChanges{
   verticalPosition: MatSnackBarVerticalPosition = 'bottom';
 
   notification: Subscription|undefined
-
+  searchText:string=""
+  users:UserInfo[]=[]
+  search$:Subject<string>;
   constructor(public authService : AuthService,
               private router : Router,
               private profileService : ProfileService,
               private socketsService : SocketsService,
               private snackBar: MatSnackBar
   ) {
-
+    this.search$=new Subject<string>()
 
     this.isAdmin=false
 
+    this.search$.pipe(debounceTime(300)).subscribe(str=>{
+      this.profileService.search(str).subscribe(x=>{
+        this.users=x.users
+      })
+    })
 
   }
+
+  searchChange() {
+    this.search$.next(this.searchText)
+
+  }
+
 
   subscribeMessage() {
     this.notification?.unsubscribe();

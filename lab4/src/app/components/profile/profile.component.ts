@@ -5,6 +5,11 @@ import {ActivatedRoute, Router} from "@angular/router";
 import { map} from "rxjs";
 import {Title} from "@angular/platform-browser";
 import FriendInfo from "../../model/user/FriendInfo";
+import {ConfirmComponent} from "../confirm/confirm.component";
+import AppSettings from "../../AppSettings";
+import {MatDialog} from "@angular/material/dialog";
+import {HttpClient} from "@angular/common/http";
+import {PhotoviewerService} from "../../services/photoviewer.service";
 
 @Component({
   selector: 'app-profile',
@@ -18,9 +23,19 @@ export class ProfileComponent implements OnInit {
   userId:string | null
   pictures: string[]=[]
   pictures4: string[]=[]
-  loadPicture:boolean=false
+  isMine:boolean=false
   selected:File |null=null;
-  constructor(private profileService: ProfileService,private route: ActivatedRoute,private titleService:Title,private router:Router) {
+  isFriend:string="false"
+
+  setAvatar:boolean=false;
+
+  constructor(private profileService: ProfileService,
+              private route: ActivatedRoute,
+              private titleService:Title,
+              private router:Router,
+              private dialog: MatDialog,
+              private http:HttpClient,
+              private photoviewerService: PhotoviewerService) {
     this.userId=null
   }
 
@@ -32,7 +47,46 @@ export class ProfileComponent implements OnInit {
     })
   }
 
+  openPhoto(picture:string) {
+    this.photoviewerService.open(picture,this.pictures)
+  }
+  openAvatar() {
+    this.photoviewerService.open(this.userInfo.avatar,new Array(this.userInfo.avatar))
+  }
 
+  addFriend(){
+      this.profileService.addFriend(this.userInfo.id).subscribe(x=>{
+          this.isFriend=x.status
+      })
+  }
+
+
+  deleteFriend(friendId:string){
+    if(this.isFriend==="true") {
+      const dialogRef = this.dialog.open(ConfirmComponent, {
+        width: '350px',
+        data: 'Вы уверены, что хотите удалить этого пользователя из друзей?'
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if(result===true) {
+          this.profileService.deleteFriend(friendId).subscribe(x=>{
+            if(x.status==="ok") {
+              this.isFriend="false"
+            }
+          })
+        }
+      });
+    }
+    else {
+      this.profileService.deleteFriend(friendId).subscribe(x=>{
+        if(x.status==="ok") {
+          this.isFriend="false"
+        }
+      })
+    }
+    //console.log(postId)
+
+  }
 
 
   getFriendsQuery(){
@@ -54,8 +108,11 @@ export class ProfileComponent implements OnInit {
 
   loadPhoto() {
     if(this.selected)
-      this.profileService.upload(this.selected).subscribe(x=>{
-        this.profileService.loadPictures(this.userInfo.id).subscribe(x=>{this.pictures=x;this.pictures4=x.slice(0,4)})
+      this.profileService.upload(this.selected,this.setAvatar).subscribe(x=>{
+        if(this.setAvatar)
+          this.loadMyPage()
+        else
+          this.profileService.loadPictures(this.userInfo.id).subscribe(x=>{this.pictures=x;this.pictures4=x.slice(0,4)})
       })
   }
 
@@ -68,24 +125,33 @@ export class ProfileComponent implements OnInit {
 
     })
     this.profileService.getFriends("").subscribe(x=>this.friends=x.friends)
-    this.loadPicture=true
+    this.isMine=true
   }
+
+
+
   loadUserPage(id:string) {
     this.profileService.getUserInfo("").subscribe(x=>{
       if(id.replace("id","")===x.id) {
         this.router.navigate(['/me'])
       }
     })
+
     this.profileService.getUserInfo(id).pipe(this.profileService.processUserInfo).subscribe(x => {
 
       this.userInfo=x
       this.userId=id
       this.titleService.setTitle(this.userInfo.firstname+" "+this.userInfo.lastname)
+      this.profileService.getFriends("").subscribe(x=>{
+        this.profileService.isFriend(id.replace("id","")).subscribe(x=>{
+           this.isFriend=x.status
+        })
+      })
 
     })
     this.profileService.getFriends(id).subscribe(x=>this.friends=x.friends)
     this.profileService.loadPictures(id.replace("id","")).subscribe(x=>{this.pictures=x;this.pictures4=x.slice(0,4)})
-    this.loadPicture=false
+    this.isMine=false
   }
 
 }

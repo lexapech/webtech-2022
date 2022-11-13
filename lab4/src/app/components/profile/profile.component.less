@@ -35,14 +35,26 @@
   height: 200px;
   transform: translateY(calc(-10px - 50%));
   border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+  image-rendering: crisp-edges;
+  background-color: @back-col;
+
 }
 
 .photo-list >div:first-child> img{
   border-radius: 10px 0 0 10px;
+
 }
+
 .photo-list > div:last-child>img{
   border-radius: 0 10px 10px 0;
 }
+
+.one-image{
+  border-radius: 10px 10px 10px 10px!important;
+}
+
 .photo-list > div{
   width: 24%;
 }

@@ -1,4 +1,5 @@
 export default interface Post{
+    id: string,
     authorid: string,
     firstname: string,
     lastname: string,

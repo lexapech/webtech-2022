@@ -38,6 +38,10 @@ import AppSettings from "./AppSettings";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import { NotificationComponent } from './components/notification/notification.component';
+import { ConfirmComponent } from './components/confirm/confirm.component';
+import { PhotoviewerComponent } from './components/photoviewer/photoviewer.component';
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 const rollbarConfig = {
   accessToken: 'ad5ead79d3a24da9855f883a57ca970c',
@@ -61,8 +65,8 @@ export function rollbarFactory() {
 export const RollbarService = new InjectionToken<Rollbar>('rollbar');
 
 @NgModule({
-    imports: [MatSnackBarModule, SocketIoModule.forRoot(AppSettings.SOCKET_CONFIG), HttpClientModule, BrowserModule, RouterOutlet, BrowserAnimationsModule, MatSliderModule, AppRoutingModule, MatInputModule, MatButtonModule, MatIconModule, MatListModule, MatMenuModule, FormsModule, ReactiveFormsModule, MatButtonToggleModule],
-  declarations: [ AppComponent, SigninComponent, SignupComponent, MainComponent, NewsComponent, ProfileComponent, MessagesComponent, FriendsComponent, DialogComponent, NotificationComponent ],
+    imports: [MatDialogModule, MatSnackBarModule, SocketIoModule.forRoot(AppSettings.SOCKET_CONFIG), HttpClientModule, BrowserModule, RouterOutlet, BrowserAnimationsModule, MatSliderModule, AppRoutingModule, MatInputModule, MatButtonModule, MatIconModule, MatListModule, MatMenuModule, FormsModule, ReactiveFormsModule, MatButtonToggleModule, MatTooltipModule],
+  declarations: [ AppComponent, SigninComponent, SignupComponent, MainComponent, NewsComponent, ProfileComponent, MessagesComponent, FriendsComponent, DialogComponent, NotificationComponent, ConfirmComponent, PhotoviewerComponent ],
   bootstrap: [ AppComponent ],
   providers: [
       AuthService,

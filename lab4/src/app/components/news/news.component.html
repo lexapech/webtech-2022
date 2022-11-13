@@ -14,17 +14,29 @@
     </div>
     <div *ngFor="let post of news;index as i">
         <div style="padding: 10px">
-            <div style="display: flex;justify-content: flex-start;padding: 10px;gap: 20px">
-                <img style="width: 50px;height: 50px;border-radius: 50%" [src]=post.avatar alt="avatar">
-                <div>
-                    <span style="font-size: 14px">{{post.firstname+" "+post.lastname}}</span><br>
-                    <span style="font-size: 14px; color: gray">{{post.date}}</span>
+            <div style="display: flex;justify-content: space-between;padding: 10px;gap: 20px">
+                <div style="display: flex;justify-content: flex-start;padding: 10px;gap: 20px">
+                    <img [routerLink]="'/id'+post.authorid" style="width: 50px;height: 50px;border-radius: 50%;cursor: pointer" [src]=post.avatar alt="avatar">
+                    <div>
+                        <span style="font-size: 14px;cursor: pointer" [routerLink]="'/id'+post.authorid">{{post.firstname+" "+post.lastname}}</span><br>
+                        <span style="font-size: 14px; color: gray">{{post.date}}</span>
+                    </div>
+                </div>
+                <div *ngIf="myProfile">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" class="hover">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="deletePost(post.id)">
+                            <span>Удалить запись</span>
+                        </button>
+                    </mat-menu>
                 </div>
             </div>
             <div style="margin: 0 20px">
                 <p *ngIf="post.content.text">{{post.content.text}}</p>
                 <div style="display: flex;justify-content: center;width:100%" *ngIf="post.content.image">
-                    <img style="min-height: 400px;max-height: 400px;max-width: 100%; image-rendering: pixelated" [src]=post.content.image alt="post">
+                    <img style="max-height: 400px;width: 100%; image-rendering: crisp-edges;object-fit: contain" [src]=post.content.image alt="post">
                 </div>
             </div>
 

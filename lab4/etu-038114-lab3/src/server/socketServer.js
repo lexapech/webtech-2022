@@ -5,6 +5,8 @@ import {storage} from "./app.js"
 
 export default class SocketServer {
 
+    postSubscribers=[]
+
     constructor() {
         let server = createServer()
         this.io = new Server(server, {
@@ -39,8 +41,24 @@ export default class SocketServer {
                     client.emit("message_read", message)
                 }
             });
+
+            socket.on('post_receive', (message) => {
+                if(message) {
+                    let temp = storage.select((row) => row.user1===socket.user.id || row.user2===socket.user.id, storage.friends)
+                    socket.listen=temp.map(row=>row.user1===socket.user.id?row.user2:row.user1)
+                    socket.listen.push(socket.user.id)
+                    this.postSubscribers.push(socket)
+                    console.log("subscribed")
+                }
+                else {
+                    this.postSubscribers=this.postSubscribers.filter(sub=>sub.user.id!==socket.user.id)
+                    console.log("unsubscribed")
+                }
+            });
+
             socket.on('disconnect', () => {
                 console.log("Users online "+this.getConnected().length);
+                this.postSubscribers=this.postSubscribers.filter(sub=>sub.user.id!==socket.user.id)
             });
             console.log("Users online "+this.getConnected().length);
         });
@@ -49,6 +67,14 @@ export default class SocketServer {
             console.log('listening on port 3100');
         });
     }
+
+    sendPost(post) {
+        let subs = this.postSubscribers.filter(x=>x.listen.find(x=>x===post.authorid))
+        for (let sub of subs) {
+            sub.emit('post_receive',post)
+        }
+    }
+
 
     getConnected() {
         return Array.from(this.io.sockets.sockets.values()).map(x=>x.user.id)

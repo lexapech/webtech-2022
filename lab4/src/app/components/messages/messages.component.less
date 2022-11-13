@@ -9,3 +9,27 @@
   transition: background-color 0.2s ease;
   cursor: pointer;
 }
+
+.unread-my {
+  margin-left: 20px;
+}
+
+.ava {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+}
+
+
+.unread-my::before {
+  content: '';
+  z-index: 0;
+  width: 8px;
+  height: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+  border-radius: 50%;
+  background-color: #31b0d5;
+  left: -20px;
+}

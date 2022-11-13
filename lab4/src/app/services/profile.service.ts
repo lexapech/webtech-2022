@@ -16,6 +16,18 @@ export class ProfileService {
         this._currentUser=null;
   }
 
+    deleteFriend(id:string) {
+        return this.http.delete<{status:string}>(AppSettings.API_ENDPOINT+`friends?id=${id}`)
+    }
+
+    addFriend(id:string) {
+        return this.http.get<{status:string}>(AppSettings.API_ENDPOINT+`addfriend?id=${id}`)
+    }
+
+    isFriend(id:string) {
+        return this.http.get<{status:string}>(AppSettings.API_ENDPOINT+`isfriend?id=${id}`)
+    }
+
   get currentUser() : Observable<UserInfo> {
         if(this._currentUser)
             return of(this._currentUser)
@@ -29,12 +41,14 @@ export class ProfileService {
 
     }
 
-    upload(file:File) {
-
+    upload(file:File,setAvatar:boolean) {
         let formData=new FormData()
         formData.append("text","")
-        if(file)
+        if(file) {
             formData.append("image",file)
+            formData.append("avatar",setAvatar.toString())
+        }
+
         return this.newsService.post(formData)
     }
 
@@ -59,6 +73,15 @@ export class ProfileService {
       else
           return this.http.get<any>(AppSettings.API_ENDPOINT+`friends`)
   }
+
+    getReq(): Observable<{friends:FriendInfo[],genitive: { first:string,last:string }}> {
+        return this.http.get<any>(AppSettings.API_ENDPOINT+`pending`)
+    }
+
+    search(query:string) {
+        return this.http.get<any>(AppSettings.API_ENDPOINT+`users?search=${query}`)
+    }
+
 
 
   processUserInfo(user:Observable<UserInfo>):Observable<UserInfo> {
