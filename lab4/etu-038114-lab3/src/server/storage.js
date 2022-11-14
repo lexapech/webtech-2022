@@ -5,6 +5,7 @@ import news from "../../data/news.json" assert {type: "json"}
 import credentials from "../../data/credentials.json" assert {type: "json"}
 import messages from "../../data/message.json" assert {type: "json"}
 import pending from "../../data/pending.json" assert {type: "json"}
+import test from "../../data/test.json" assert {type: "json"}
 class Storage {
     constructor() {
         this.users=users
@@ -13,11 +14,12 @@ class Storage {
         this.credentials = credentials
         this.messages = messages
         this.pending = pending
+        this.test = test
     }
 
     writeJson(obj, file) {
-        fs.writeFile('data/' + file+'.json', JSON.stringify(obj), 'utf8', () => {
-        });
+
+        fs.writeFileSync('data/' + file+'.json', JSON.stringify(obj), 'utf8')
     }
 
     insert(data,into) {
