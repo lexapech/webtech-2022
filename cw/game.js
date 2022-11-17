@@ -2,42 +2,71 @@
 ready = async () => {
     console.log("document loaded")
 
-    let mapMan = new mapManager(()=>{
-        let graphics = new GraphicsController()
-
-        let pos = mapMan.getPlayerSpawnPos()
-        console.log(mapMan)
-        let playerManager = new playerController(pos.x,pos.y)
-        graphics.renderList.push((x)=>mapMan.drawMap(x,{x: playerManager.playerX,y: playerManager.playerY}))
-        graphics.renderList.push(()=>playerManager.movePlayer())
-    })
+    let game = new GameManager()
 }
 
 class GameManager {
-
-}
-class EventManager {
-
-}
-class SpriteManager {
-
-}
-class AudioManager {
-
-}
-class PhysicsManager {
-    
-}
-
-
-
-
-class GraphicsController {
-    constructor(ctx) {
-        this.renderList=[]
-        this.ctx = this.initCanvas()
-        window.requestAnimationFrame((time) => this.draw(this.ctx, time))
+    constructor() {
+        this.ctx=this.initCanvas()
+        this.mapManager = new MapManager(this.ctx)
+        this.mapManager.loadMap(()=>this.afterMapLoaded(this))
+        this.view={x:200,y:200,zoom:4}
+        this.eventManager = new EventManager(this.setPlayerSpeed.bind(this))
     }
+
+    update() {
+        for(let entity of this.entities)
+            entity.update()
+        this.view.x=this.player.x
+        this.view.y=this.player.y
+        this.mapManager.drawMap(this.ctx,this.view)
+        this.drawEntities()
+    }
+
+    drawEntities() {
+        for (let entity of this.entities) {
+            entity.sprite.draw(this.view)
+        }
+    }
+
+
+
+    afterMapLoaded(game){
+        this.wallTiles = this.mapManager.getWalls()
+        console.log(this.wallTiles)
+        this.entities = this.mapManager.getObjects()
+        this.entities = this.entities.map((x)=>{
+            x.extend = (properties) =>{
+                for(let prop in properties) {
+                    x[prop] = properties[prop]
+                }
+                return x
+            }
+            return x
+        })
+        this.entities = this.entities.map(x=>x.extend({update: ()=>{},sprite:new SpriteManager(this.ctx,x)}))
+        let player = this.entities.find(x=>x.name="player")
+        this.initPlayer(player)
+        console.log(this.entities)
+
+        let update = this.update.bind(game)
+        game.mainTimer = setInterval(update,17)
+    }
+
+    initPlayer(entity) {
+        this.player = entity;
+        this.player.vx=0
+        this.player.vy=0
+        this.player.physics =new PhysicsManager(this.player,this.wallTiles)
+        this.player.update=this.player.physics.update.bind(this.player.physics)
+    }
+    setPlayerSpeed(x,y) {
+        if(x!==undefined)
+            this.player.vx=x
+        if(y!==undefined)
+            this.player.vy=y
+    }
+
 
     initCanvas = () => {
         let canvas = document.querySelector("#canvas")
@@ -53,83 +82,125 @@ class GraphicsController {
         return null;
     }
 
-    draw = (ctx, time) => {
-        for (let f of this.renderList){
-            f(ctx)
+
+}
+class EventManager {
+    constructor(movePlayer) {
+        this.move = movePlayer
+        console.log(this.move)
+        window.addEventListener("keydown",this.onKeyDown.bind(this))
+        window.addEventListener("keyup",this.onKeyUp.bind(this))
+        this.left=0
+        this.right=0
+        this.up=0
+        this.down=0;
+    }
+    onKeyDown(e){
+        if(e.key === "w" || e.key==="ArrowUp") {
+            this.up=1;
+
         }
-        //this.drawMap(ctx,{x:pox,y:100})
-        window.requestAnimationFrame((time) => this.draw(ctx, time))
+        else if(e.key === "s" || e.key==="ArrowDown") {
+            this.down=1;
+
+        }
+        else if(e.key === "a" || e.key==="ArrowLeft") {
+            this.left=1;
+
+        }
+        else if(e.key === "d" || e.key==="ArrowRight") {
+            this.right=1;
+
+        }
+        this.move(this.right-this.left,this.down-this.up);
+    }
+    onKeyUp(e) {
+        if(e.key === "w" || e.key==="ArrowUp") {
+            this.up=0;
+
+        }
+        else if(e.key === "s" || e.key==="ArrowDown") {
+            this.down=0;
+
+        }
+        else if(e.key === "a" || e.key==="ArrowLeft") {
+            this.left=0;
+
+        }
+        else if(e.key === "d" || e.key==="ArrowRight") {
+            this.right=0;
+
+        }
+        this.move(this.right-this.left,this.down-this.up);
+    }
+
+}
+class SpriteManager {
+    constructor(ctx,entity) {
+        this.ctx=ctx
+        this.entity = entity
+    }
+    draw(view){
+        this.ctx.strokeRect((-view.x + this.entity.offsetx + this.entity.x) * view.zoom + this.ctx.canvas.clientWidth / 2,
+        (-view.y + this.entity.offsety + this.entity.y - this.entity.image.height) * view.zoom + this.ctx.canvas.clientHeight / 2,
+            this.entity.image.width * view.zoom,
+            this.entity.image.height * view.zoom);
+        this.ctx.drawImage(this.entity.image.data,
+            this.entity.image.x, this.entity.image.y,
+            this.entity.image.width, this.entity.image.height,
+            (-view.x + this.entity.offsetx + this.entity.x) * view.zoom + this.ctx.canvas.clientWidth / 2,
+            (-view.y + this.entity.offsety + this.entity.y - this.entity.image.height) * view.zoom + this.ctx.canvas.clientHeight / 2,
+            this.entity.image.width * view.zoom, this.entity.image.height * view.zoom)
     }
 }
+class AudioManager {
 
-
-
-
-
-class playerController {
-
-    constructor(x,y) {
-        this.playerX = x
-        this.playerY = y
-        this.playerVx = 0
-        this.playerVy = 0
-        this.prevtime=undefined
-        window.addEventListener("keydown",(e)=>{
-            if(e.key === "w" || e.key==="ArrowUp") {
-                this.playerVy=-1;
-            }
-            else if(e.key === "s" || e.key==="ArrowDown") {
-                this.playerVy=1;
-            }
-            else if(e.key === "a" || e.key==="ArrowLeft") {
-                this.playerVx=-1;
-            }
-            else if(e.key === "d" || e.key==="ArrowRight") {
-                this.playerVx=1;
-            }
-        })
-        window.addEventListener("keyup",(e)=>{
-            if(e.key === "w" || e.key==="ArrowUp") {
-                this.playerVy=0;
-            }
-            else if(e.key === "s" || e.key==="ArrowDown") {
-                this.playerVy=0;
-            }
-            else if(e.key === "a" || e.key==="ArrowLeft") {
-                this.playerVx=0;
-            }
-            else if(e.key === "d" || e.key==="ArrowRight") {
-                this.playerVx=0;
-            }
-        })
+}
+class PhysicsManager {
+    constructor(entity,walls) {
+        console.log(entity)
+        this.entity = entity
+        this.walls=walls
     }
 
-    movePlayer = () => {
-        this.playerX+=this.playerVx
-        this.playerY+=this.playerVy
+    canStep(x,y) {
+        for(let tile of this.walls) {
+            if(x>=tile.x && x <= tile.x+tile.width && y >= tile.y && y <= tile.y +tile.height) return false;
+        }
+        return true;
+    }
+
+    update() {
+        if(this.canStep(this.entity.x+this.entity.vx,this.entity.y)) {
+            this.entity.x+=this.entity.vx
+
+        }
+        if(this.canStep(this.entity.x,this.entity.y+this.entity.vy)) {
+            this.entity.y+=this.entity.vy
+
+        }
+
     }
 }
-
 
 
 
 class MapManager {
 
-    constructor(cb) {
+    constructor(ctx) {
+        this.ctx=ctx
         this.tilesets = []
-        this.view={x:0,y:0,zoom:5}
-        this.loadMap(cb)
+
     }
 
     loadMap = (callback) => {
+
         fetch("map1/map1.tmj")
             .then((response) => response.json())
             .then((map) => {
                 this.mapObject = map
                 this.loadTilesets(this.mapObject).then((ts) => {
                     this.tilesets = ts
-                    //window.requestAnimationFrame((time)=>draw(this.canvasContext,time))
-                    //this.drawMap(this.canvasContext,{x:100,y:100})
                     callback()
                 })
             })
@@ -166,6 +237,37 @@ class MapManager {
         return tileset
     }
 
+    getObjects(){
+        let entities = []
+        for (let layer of this.mapObject.layers) {
+            if (layer.type === "objectgroup") {
+                let offsetx = 0
+                let offsety = 0
+                if (layer.offsetx) offsetx = layer.offsetx
+                if (layer.offsety) offsety = layer.offsety
+                for (let object of layer.objects) {
+                    let gid = object.gid
+                    let tileset = this.tilesets.find((t) => t.firstgid <= gid)
+                    let image = this.getTileImageBox(gid - tileset.firstgid, tileset.data)
+                    entities.push({
+                        x:object.x,
+                        y:object.y,
+                        class: object.class,
+                        name: object.name,
+                        id: object.id,
+                        visible: object.visible,
+                        rotation: object.rotation,
+                        image: {x:image.x,y:image.y,width:image.width,height:image.height,data:tileset.data.image},
+                        layer: layer.name,
+                        offsetx: offsetx,
+                        offsety: offsety
+                    })
+
+                }
+            }
+        }
+        return entities
+    }
 
     loadTilesets = async (mapObject) => {
         let tilesets = []
@@ -203,39 +305,41 @@ class MapManager {
         return {x:object.x, y:object.y}
     }
 
-    drawObjects(layer){
-
-        let offsetx = 0
-        let offsety = 0
-        if (layer.offsetx) offsetx = layer.offsetx
-        if (layer.offsety) offsety = layer.offsety
-        for (let object of layer.objects) {
-            if (layer.name==="player") {
-                object.x=viewx-object.width/2
-                object.y=viewy+object.height/2
-            }
-            let gid = object.gid
-            let tileset = this.tilesets.find((t) => t.firstgid <= gid)
-            let image = this.getTileImageBox(gid - tileset.firstgid, tileset.data)
-            ctx.drawImage(tileset.data.image,
-                image.x, image.y,
-                image.width, image.height,
-                (-viewx + offsetx + object.x) * scale + ctx.canvas.clientWidth / 2,
-                (-viewy + offsety + object.y - object.height) * scale + ctx.canvas.clientHeight / 2,
-                image.width * scale, image.height * scale)
-        }
-    }
     getTile(x,y,layer) {
         let tile={}
 
         tile.id = layer.data[y * layer.height + x]
         if (tile.id === 0) return tile;
-        let tileset = this.tilesets.find((t) => t.firstgid <= (tileid & 0xFFFF))
-        tile.image = this.getTileImageBox((tile.id & 0xFFFF) - tileset.firstgid, tileset.data)
+        tile.tileset = this.tilesets.find((t) => t.firstgid <= (tile.id & 0xFFFF))
+        tile.image = this.getTileImageBox((tile.id & 0xFFFF) - tile.tileset.firstgid, tile.tileset.data)
         return tile
     }
 
-    drawLayer(layer,ctx) {
+    isVisible(x,y,width,height,ctx,view) {
+        return !((x - view.x + width) * view.zoom < -this.ctx.canvas.clientWidth / 2 ||
+            (y - view.y + height) * view.zoom < -this.ctx.canvas.clientHeight / 2 ||
+            (x - view.x) * view.zoom > this.ctx.canvas.clientWidth / 2 ||
+            (y - view.y) * view.zoom > this.ctx.canvas.clientHeight / 2);
+
+    }
+
+    getWalls(){
+        let tiles=[]
+        let layer = this.mapObject.layers.find(layer=>layer.type === "tilelayer" && layer.name==="walls")
+        if (!layer) return tiles
+        for (let y = 0; y < layer.height; y++) {
+            for (let x = 0; x < layer.width; x++) {
+                let tile = this.getTile(x, y,layer)
+                if (tile.id===0) continue
+                let tilex =x * this.mapObject.tilewidth
+                let tiley =(y - (tile.image.height / this.mapObject.tileheight - 1)) * this.mapObject.tileheight
+                tiles.push({x:tilex,y:tiley,width:this.mapObject.tilewidth,height:this.mapObject.tileheight})
+            }
+        }
+        return tiles
+    }
+
+    drawLayer(layer,ctx,view) {
         if (layer.type === "tilelayer") {
             let offsetx = 0
             let offsety = 0
@@ -244,12 +348,16 @@ class MapManager {
             for (let y = 0; y < layer.height; y++) {
                 for (let x = 0; x < layer.width; x++) {
                     let tile = this.getTile(x, y,layer)
-                    ctx.drawImage(tile.image,
+                    if (tile.id===0) continue
+                    let tilex = offsetx + x * this.mapObject.tilewidth
+                    let tiley = offsety + (y - (tile.image.height / this.mapObject.tileheight - 1)) * this.mapObject.tileheight
+                    if(!this.isVisible(tilex,tiley,tile.image.width,tile.image.height,this.ctx,view)) continue
+                    ctx.drawImage(tile.tileset.data.image,
                         tile.image.x, tile.image.y,
                         tile.image.width, tile.image.height,
-                        (-this.view.x + offsetx + x * this.mapObject.tilewidth) * this.view.zoom + ctx.canvas.clientWidth / 2,
-                        (-this.view.y + offsety + (y - (tile.image.height / this.mapObject.tileheight - 1)) * this.mapObject.tileheight) * this.view.zoom + ctx.canvas.clientHeight / 2,
-                        tile.image.width * this.view.zoom, tile.image.height * this.view.zoom)
+                        (-view.x + tilex) * view.zoom + this.ctx.canvas.clientWidth / 2,
+                        (-view.y + tiley) * view.zoom + this.ctx.canvas.clientHeight / 2,
+                        tile.image.width * view.zoom, tile.image.height * view.zoom)
 
                 }
             }
@@ -262,7 +370,7 @@ class MapManager {
         ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
         for (let layer of this.mapObject.layers) {
             //if (layer.name === "Слой тайлов 2") continue;
-            this.drawLayer(layer,ctx)
+            this.drawLayer(layer,ctx,view)
         }
 
     }
