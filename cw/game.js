@@ -2,8 +2,7 @@
 ready = async () => {
     console.log("document loaded")
 
-    let mapMan = new mapManager()
-    mapMan.loadMap(()=>{
+    let mapMan = new mapManager(()=>{
         let graphics = new GraphicsController()
 
         let pos = mapMan.getPlayerSpawnPos()
@@ -13,6 +12,25 @@ ready = async () => {
         graphics.renderList.push(()=>playerManager.movePlayer())
     })
 }
+
+class GameManager {
+
+}
+class EventManager {
+
+}
+class SpriteManager {
+
+}
+class AudioManager {
+
+}
+class PhysicsManager {
+    
+}
+
+
+
 
 class GraphicsController {
     constructor(ctx) {
@@ -95,11 +113,12 @@ class playerController {
 
 
 
-class mapManager {
+class MapManager {
 
-    constructor() {
+    constructor(cb) {
         this.tilesets = []
-
+        this.view={x:0,y:0,zoom:5}
+        this.loadMap(cb)
     }
 
     loadMap = (callback) => {
@@ -170,9 +189,6 @@ class mapManager {
         return tileset
     }
 
-
-
-
     getTileImageBox = (id, tileset) => {
 
         let x = id % tileset.columns
@@ -187,55 +203,66 @@ class mapManager {
         return {x:object.x, y:object.y}
     }
 
+    drawObjects(layer){
+
+        let offsetx = 0
+        let offsety = 0
+        if (layer.offsetx) offsetx = layer.offsetx
+        if (layer.offsety) offsety = layer.offsety
+        for (let object of layer.objects) {
+            if (layer.name==="player") {
+                object.x=viewx-object.width/2
+                object.y=viewy+object.height/2
+            }
+            let gid = object.gid
+            let tileset = this.tilesets.find((t) => t.firstgid <= gid)
+            let image = this.getTileImageBox(gid - tileset.firstgid, tileset.data)
+            ctx.drawImage(tileset.data.image,
+                image.x, image.y,
+                image.width, image.height,
+                (-viewx + offsetx + object.x) * scale + ctx.canvas.clientWidth / 2,
+                (-viewy + offsety + object.y - object.height) * scale + ctx.canvas.clientHeight / 2,
+                image.width * scale, image.height * scale)
+        }
+    }
+    getTile(x,y,layer) {
+        let tile={}
+
+        tile.id = layer.data[y * layer.height + x]
+        if (tile.id === 0) return tile;
+        let tileset = this.tilesets.find((t) => t.firstgid <= (tileid & 0xFFFF))
+        tile.image = this.getTileImageBox((tile.id & 0xFFFF) - tileset.firstgid, tileset.data)
+        return tile
+    }
+
+    drawLayer(layer,ctx) {
+        if (layer.type === "tilelayer") {
+            let offsetx = 0
+            let offsety = 0
+            if (layer.offsetx) offsetx = layer.offsetx
+            if (layer.offsety) offsety = layer.offsety
+            for (let y = 0; y < layer.height; y++) {
+                for (let x = 0; x < layer.width; x++) {
+                    let tile = this.getTile(x, y,layer)
+                    ctx.drawImage(tile.image,
+                        tile.image.x, tile.image.y,
+                        tile.image.width, tile.image.height,
+                        (-this.view.x + offsetx + x * this.mapObject.tilewidth) * this.view.zoom + ctx.canvas.clientWidth / 2,
+                        (-this.view.y + offsety + (y - (tile.image.height / this.mapObject.tileheight - 1)) * this.mapObject.tileheight) * this.view.zoom + ctx.canvas.clientHeight / 2,
+                        tile.image.width * this.view.zoom, tile.image.height * this.view.zoom)
+
+                }
+            }
+        }
+    }
+
     drawMap = (ctx,view) => {
-        let viewx = view.x
-        let viewy = view.y
-        let scale = 4.0
+
         ctx.fillStyle = '#b0906b'
         ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
         for (let layer of this.mapObject.layers) {
             //if (layer.name === "Слой тайлов 2") continue;
-            if (layer.type === "tilelayer") {
-                let offsetx = 0
-                let offsety = 0
-                if (layer.offsetx) offsetx = layer.offsetx
-                if (layer.offsety) offsety = layer.offsety
-                for (let y = 0; y < layer.height; y++) {
-                    for (let x = 0; x < layer.width; x++) {
-                        let tileid = layer.data[y * layer.height + x]
-                        if (tileid === 0) continue
-                        let tileset = this.tilesets.find((t) => t.firstgid <= (tileid & 0xFFFF))
-                        let image = this.getTileImageBox((tileid & 0xFFFF) - tileset.firstgid, tileset.data)
-                        ctx.drawImage(tileset.data.image,
-                            image.x, image.y,
-                            image.width, image.height,
-                            (-viewx + offsetx + x * this.mapObject.tilewidth) * scale + ctx.canvas.clientWidth / 2,
-                            (-viewy + offsety + (y - (image.height / this.mapObject.tileheight - 1)) * this.mapObject.tileheight) * scale + ctx.canvas.clientHeight / 2,
-                            image.width * scale, image.height * scale)
-                    }
-                }
-            } else {
-
-                let offsetx = 0
-                let offsety = 0
-                if (layer.offsetx) offsetx = layer.offsetx
-                if (layer.offsety) offsety = layer.offsety
-                for (let object of layer.objects) {
-                    if (layer.name==="player") {
-                        object.x=viewx-object.width/2
-                        object.y=viewy+object.height/2
-                    }
-                    let gid = object.gid
-                    let tileset = this.tilesets.find((t) => t.firstgid <= gid)
-                    let image = this.getTileImageBox(gid - tileset.firstgid, tileset.data)
-                    ctx.drawImage(tileset.data.image,
-                        image.x, image.y,
-                        image.width, image.height,
-                        (-viewx + offsetx + object.x) * scale + ctx.canvas.clientWidth / 2,
-                        (-viewy + offsety + object.y - object.height) * scale + ctx.canvas.clientHeight / 2,
-                        image.width * scale, image.height * scale)
-                }
-            }
+            this.drawLayer(layer,ctx)
         }
 
     }
