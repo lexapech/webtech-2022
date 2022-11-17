@@ -14,7 +14,7 @@
         </form>
         <div style="display:flex;flex-direction:column;justify-content: flex-start;position: absolute;max-height: 50vh; top:100%;width: 150%;padding: 0;background-color: white;overflow-y: scroll" class="panel" *ngIf="searchText!==''">
             <div  *ngFor="let user of users;index as i;">
-                <div class="friends-list-entry" style="cursor: pointer;padding: 10px 0" (click)="searchText=''" [routerLink]="'/id'+user.id">
+                <div class="friends-list-entry" style="cursor: pointer;padding: 10px 10px" (click)="searchText=''" [routerLink]="'/id'+user.id">
                     <div style="display: flex;gap: 20px;align-items: center">
                         <img  style="width: 80px;height: 80px;border-radius: 50%" [src]=user.avatar alt="avatar">
                         <div>
