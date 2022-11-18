@@ -24,6 +24,7 @@ class GameManager {
     }
 
     drawEntities() {
+        this.entities=this.entities.sort((a,b)=>a.y-b.y)
         for (let entity of this.entities) {
             entity.sprite.draw(this.view)
         }
@@ -33,8 +34,11 @@ class GameManager {
 
     afterMapLoaded(game){
         this.wallTiles = this.mapManager.getWalls()
-        console.log(this.wallTiles)
-        this.entities = this.mapManager.getObjects()
+        this.entities =  this.mapManager.getObjects().map(x=>x)
+
+        console.log(this.entities)
+
+        console.log(this.entities)
         this.entities = this.entities.map((x)=>{
             x.extend = (properties) =>{
                 for(let prop in properties) {
@@ -45,10 +49,9 @@ class GameManager {
             return x
         })
         this.entities = this.entities.map(x=>x.extend({update: ()=>{},sprite:new SpriteManager(this.ctx,x)}))
-        let player = this.entities.find(x=>x.name="player")
-        this.initPlayer(player)
-        console.log(this.entities)
 
+        let player = this.entities.find(x=>x.name==="player")
+        this.initPlayer(player)
         let update = this.update.bind(game)
         game.mainTimer = setInterval(update,17)
     }
@@ -145,37 +148,66 @@ class SpriteManager {
         (-view.y + this.entity.offsety + this.entity.y - this.entity.image.height) * view.zoom + this.ctx.canvas.clientHeight / 2,
             this.entity.image.width * view.zoom,
             this.entity.image.height * view.zoom);
+        let dir = (this.entity.vx>=0 || this.entity.vx===undefined)?1:-1
+
+        this.ctx.save()
+        this.ctx.translate((-view.x + this.entity.offsetx + this.entity.x + (dir===-1?this.entity.image.width:0)) * view.zoom + this.ctx.canvas.clientWidth / 2,
+            (-view.y + this.entity.offsety + this.entity.y - this.entity.image.height) * view.zoom + this.ctx.canvas.clientHeight / 2);
+        this.ctx.scale(dir, 1);
         this.ctx.drawImage(this.entity.image.data,
             this.entity.image.x, this.entity.image.y,
             this.entity.image.width, this.entity.image.height,
-            (-view.x + this.entity.offsetx + this.entity.x) * view.zoom + this.ctx.canvas.clientWidth / 2,
-            (-view.y + this.entity.offsety + this.entity.y - this.entity.image.height) * view.zoom + this.ctx.canvas.clientHeight / 2,
+            0,
+            0,
             this.entity.image.width * view.zoom, this.entity.image.height * view.zoom)
+        this.ctx.restore()
     }
+
 }
 class AudioManager {
 
 }
 class PhysicsManager {
     constructor(entity,walls) {
-        console.log(entity)
+        console.log("entity",entity)
         this.entity = entity
         this.walls=walls
+        this.collision={width:1.0,height:0.1}
     }
 
-    canStep(x,y) {
-        for(let tile of this.walls) {
-            if(x>=tile.x && x <= tile.x+tile.width && y >= tile.y && y <= tile.y +tile.height) return false;
+    canStep(entity,dir) {
+        let nextx = entity.x
+        let nexty = entity.y
+
+        if(dir)
+            nexty+=entity.vy
+        else
+            nextx+=entity.vx
+
+
+
+        let checks=[]
+        checks.push({x: entity.image.width / 2 + nextx - entity.image.width* this.collision.width / 2, y: nexty - entity.image.height*this.collision.height })
+        checks.push({x: entity.image.width / 2 + nextx + entity.image.width*this.collision.width / 2, y: nexty - entity.image.height*this.collision.height })
+        checks.push({x: entity.image.width / 2 + nextx - entity.image.width*this.collision.width / 2, y: nexty})
+        checks.push({x: entity.image.width / 2 + nextx + entity.image.width*this.collision.width / 2, y: nexty})
+        for(let check of checks) {
+            let x = Math.floor(check.x/this.walls.width)
+            let y = Math.floor(check.y/this.walls.height)
+            if(this.walls.tiles[x+this.walls.xcount*y]) {
+                return false
+
+            }
         }
         return true;
     }
 
     update() {
-        if(this.canStep(this.entity.x+this.entity.vx,this.entity.y)) {
+        if(this.canStep(this.entity,false)) {
             this.entity.x+=this.entity.vx
 
         }
-        if(this.canStep(this.entity.x,this.entity.y+this.entity.vy)) {
+        if(this.canStep(this.entity,true)) {
             this.entity.y+=this.entity.vy
 
         }
@@ -245,23 +277,24 @@ class MapManager {
                 let offsety = 0
                 if (layer.offsetx) offsetx = layer.offsetx
                 if (layer.offsety) offsety = layer.offsety
-                for (let object of layer.objects) {
-                    let gid = object.gid
+                for (let obj of layer.objects) {
+                    let gid = obj.gid
                     let tileset = this.tilesets.find((t) => t.firstgid <= gid)
                     let image = this.getTileImageBox(gid - tileset.firstgid, tileset.data)
                     entities.push({
-                        x:object.x,
-                        y:object.y,
-                        class: object.class,
-                        name: object.name,
-                        id: object.id,
-                        visible: object.visible,
-                        rotation: object.rotation,
+                        x:obj.x,
+                        y:obj.y,
+                        class: obj.class,
+                        name: obj.name,
+                        id: obj.id,
+                        visible: obj.visible,
+                        rotation: obj.rotation,
                         image: {x:image.x,y:image.y,width:image.width,height:image.height,data:tileset.data.image},
                         layer: layer.name,
                         offsetx: offsetx,
                         offsety: offsety
                     })
+
 
                 }
             }
@@ -330,13 +363,14 @@ class MapManager {
         for (let y = 0; y < layer.height; y++) {
             for (let x = 0; x < layer.width; x++) {
                 let tile = this.getTile(x, y,layer)
-                if (tile.id===0) continue
-                let tilex =x * this.mapObject.tilewidth
-                let tiley =(y - (tile.image.height / this.mapObject.tileheight - 1)) * this.mapObject.tileheight
-                tiles.push({x:tilex,y:tiley,width:this.mapObject.tilewidth,height:this.mapObject.tileheight})
+                if (tile.id===0) {tiles[x+layer.width*y]=false; continue}
+                let tilex = x * this.mapObject.tilewidth
+                let tiley = (y - (tile.image.height / this.mapObject.tileheight - 1)) * this.mapObject.tileheight
+                tiles[x+layer.width*y] = true
+                //tiles.push({x: tilex, y: tiley,width:this.mapObject.tilewidth,height:this.mapObject.tileheight})
             }
         }
-        return tiles
+        return {width: this.mapObject.tilewidth, height: this.mapObject.tileheight,xcount:layer.width, tiles: tiles}
     }
 
     drawLayer(layer,ctx,view) {
