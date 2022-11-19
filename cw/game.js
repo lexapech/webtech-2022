@@ -19,12 +19,11 @@ class GameManager {
             entity.update()
         this.view.x=this.player.x
         this.view.y=this.player.y
-        this.mapManager.drawMap(this.ctx,this.view)
-        this.drawEntities()
+        this.mapManager.drawMap(this.ctx,this.view,this.drawEntities.bind(this))
     }
 
-    drawEntities() {
-        this.entities=this.entities.sort((a,b)=>a.y-b.y)
+    drawEntities(layer) {
+        this.entities=this.entities.sort((a,b) => a.y - b.y)
         for (let entity of this.entities) {
             entity.sprite.draw(this.view)
         }
@@ -36,9 +35,6 @@ class GameManager {
         this.wallTiles = this.mapManager.getWalls()
         this.entities =  this.mapManager.getObjects().map(x=>x)
 
-        console.log(this.entities)
-
-        console.log(this.entities)
         this.entities = this.entities.map((x)=>{
             x.extend = (properties) =>{
                 for(let prop in properties) {
@@ -149,11 +145,12 @@ class SpriteManager {
             this.entity.image.width * view.zoom,
             this.entity.image.height * view.zoom);
         let dir = (this.entity.vx>=0 || this.entity.vx===undefined)?1:-1
-
         this.ctx.save()
+
         this.ctx.translate((-view.x + this.entity.offsetx + this.entity.x + (dir===-1?this.entity.image.width:0)) * view.zoom + this.ctx.canvas.clientWidth / 2,
             (-view.y + this.entity.offsety + this.entity.y - this.entity.image.height) * view.zoom + this.ctx.canvas.clientHeight / 2);
         this.ctx.scale(dir, 1);
+
         this.ctx.drawImage(this.entity.image.data,
             this.entity.image.x, this.entity.image.y,
             this.entity.image.width, this.entity.image.height,
@@ -172,7 +169,7 @@ class PhysicsManager {
         console.log("entity",entity)
         this.entity = entity
         this.walls=walls
-        this.collision={width:1.0,height:0.1}
+        this.collision={width:1.0,height:0.8}
     }
 
     canStep(entity,dir) {
@@ -398,13 +395,17 @@ class MapManager {
         }
     }
 
-    drawMap = (ctx,view) => {
+    drawMap = (ctx,view,entityDraw) => {
 
         ctx.fillStyle = '#b0906b'
         ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
         for (let layer of this.mapObject.layers) {
-            //if (layer.name === "Слой тайлов 2") continue;
-            this.drawLayer(layer,ctx,view)
+            if (layer.type === "objectgroup") {
+                entityDraw(layer.name)
+            }
+            else {
+                this.drawLayer(layer, ctx, view)
+            }
         }
 
     }
