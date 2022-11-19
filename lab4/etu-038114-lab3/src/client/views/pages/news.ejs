@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<%- include('../partials/head.ejs'); %>
+<body>
+<%if (gulp){%>
+    <script src="/assets/news.js"></script>
+<%}%>
+<%- include('../partials/header.ejs'); %>
+<nav>
+    <div style="width: 56px;padding: 26.5px 0"></div>
+    <div class="table-title">
+        <span id="title-span">Новости</span>
+    </div>
+    <div class="filter-container">
+        <div class="filter">
+            <img src="/assets/funnel.svg">
+        </div>
+        <div class="dropdown">
+            <div>
+                <input class="filter-checkbox" type="checkbox">
+                <label>Показывать заблокированные</label>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="news">
+</div>
+</body>
+</html>

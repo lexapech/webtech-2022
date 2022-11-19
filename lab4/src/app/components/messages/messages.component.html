@@ -1,0 +1,15 @@
+<div class="panel" style="padding: 0;width: 70%">
+    <div *ngFor="let dialog of dialogs;index as i;">
+    <div class="msg-list-entry hover" routerLink="/dialog" [queryParams]="{id:dialog.user.id}">
+        <img style="width: 50px;height: 50px;border-radius: 50%" [src]=dialog.user.avatar alt="avatar">
+        <div>
+            <span style="font-size: 14px">{{dialog.user.firstname+" "+dialog.user.lastname}}</span><br>
+            <div style="display: flex; align-items: center;height: 32px;gap: 10px">
+                <img class="ava" *ngIf="dialog.message.from===userInfo.id" [src]="userInfo.avatar">
+            <span  [ngClass]="getClasses(dialog)" style="font-size: 14px; color: gray;position: relative;">{{dialog.message.content}}</span>
+            </div>
+        </div>
+    </div>
+    <mat-divider *ngIf="i<dialogs.length-1"></mat-divider>
+    </div>
+</div>

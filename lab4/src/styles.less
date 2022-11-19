@@ -1,0 +1,48 @@
+/* You can add global styles to this file, and also import other style files */
+@back-col: #E7E7E7;
+@table-col: #D9D9D9;
+@hover-col: #E0E0E0;
+
+html, body { height: 100%; overflow: hidden }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.panel {
+  background-color: @back-col;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+}
+
+.hover:hover {
+  background-color: @hover-col;
+
+}
+
+
+.hover-transparent:hover {
+  background-color: rgba(179, 179, 179, 0.7)!important;
+
+}
+
+.snackbar-panel {
+  background-color: rgba(50,50,50,0.7);
+  min-width: 5vw!important;
+  width: min-content!important;
+}
+.mat-button-toggle-group {
+  border: none;
+}
+
+.mat-button-toggle {
+  background-color: @back-col;
+  border-radius: 5px;
+  border: none!important;
+}
+.mat-button-toggle-checked {
+  background-color: @table-col;
+}
+
+.phv-panel .mat-dialog-container {
+  background-color: #5e5e5e;
+  padding: 0!important;
+}

@@ -1,0 +1,28 @@
+<div class ="panel" style="width: 70%;height: 95%;display: flex;flex-direction: column;padding: 0">
+    <div style="display: flex;justify-content: space-between;align-items: center;padding: 10px 20px;height: min-content">
+        <button mat-button (click)="back()">
+            <mat-icon>arrow_back</mat-icon>
+            Назад
+        </button>
+        <div>
+            <p style="font-size: 18px;">{{user.firstname+" "+user.lastname}}</p>
+        </div>
+        <img style="width: 64px;height: 64px;border-radius: 50%" [src]=user.avatar alt="avatar">
+    </div>
+    <mat-divider></mat-divider>
+    <div #scroll style="height: 80%;max-height: 80%;overflow-y: scroll;" >
+        <div style="padding: 10px 20px; display: flex; justify-content: flex-end; flex-direction: column; gap: 20px;">
+            <div #msglist *ngFor="let message of messages">
+                <div style="display: flex;" [style.justify-content]="message.mine?'flex-end':'flex-start'">
+                    <span class="message " [ngClass]="{'unread-my':!message.msg.read&&message.mine}">{{message.msg.content}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div style="display: flex;justify-content: space-between">
+        <input [(ngModel)]="messageText" (keydown)="$event.key==='Enter'?sendMessage():{}" type="text" style="width: 80%;border: gray;border-radius: 5px;margin: 20px 0 20px 20px;padding: 5px" placeholder="Введите сообщение">
+        <button (click)="sendMessage()" style="margin: 20px 20px 20px 0" mat-raised-button color="primary">ОТПРАВИТЬ</button>
+    </div>
+</div>
+

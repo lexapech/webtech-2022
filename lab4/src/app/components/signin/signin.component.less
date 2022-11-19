@@ -1,0 +1,42 @@
+@import (reference) "/src/styles.less";
+
+.space-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.vertical-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+}
+
+.title {
+  background-color: @back-col;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 10px;
+}
+
+.title >span {
+  font-size: 32px;
+}
+
+.form {
+  width: max(37%, 500px);
+  background-color: @back-col;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  padding: 60px 0 40px 0;
+}
+
+.form > form {
+  width: 75%;
+}
+.input-field {
+  width: 100%;
+  font-size: 12px;
+  margin: 10px 0;
+}

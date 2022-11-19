@@ -1,0 +1,47 @@
+<div *ngIf="myProfile" class="panel" style="padding: 0;" [style]="isMine?'':'width: 70%'" >
+    <form [formGroup]="postForm" >
+        <input (focus)="buttons.style.display='flex'" formControlName="text" type="text" style="background-color: rgba(0,0,0,0); width: calc(100% - 50px);border: gray;border-radius: 5px;margin: 20px 0 20px 20px;padding: 10px 5px" placeholder="Что у вас нового?">
+        <input #fileSelector (change)="onFileSelected($event)" formControlName="image" type="file" style="display: none">
+        <div #buttons style="display: none;justify-content: space-between;padding: 0 20px 10px 20px">
+        <button mat-icon-button class="hover" (click)="fileSelector.click()"><mat-icon>photo_camera</mat-icon></button>
+        <button mat-raised-button class="hover" color="primary" (click)="createPost()">Опубликовать</button>
+        </div>
+    </form>
+</div>
+<div class="panel" style="padding: 0 0 10px 0;" [style]="isMine?'':'width: 70%'" >
+    <div *ngIf="news.length===0" style="display: flex;justify-content: center;align-items: center;height: 300px">
+        <p style="font-size: 20px;color: gray">Новостей пока нет.</p>
+    </div>
+    <div *ngFor="let post of news;index as i">
+        <div style="padding: 10px">
+            <div style="display: flex;justify-content: space-between;padding: 10px;gap: 20px">
+                <div style="display: flex;justify-content: flex-start;padding: 10px;gap: 20px">
+                    <img [routerLink]="'/id'+post.authorid" style="width: 50px;height: 50px;border-radius: 50%;cursor: pointer" [src]=post.avatar alt="avatar">
+                    <div>
+                        <span style="font-size: 14px;cursor: pointer" [routerLink]="'/id'+post.authorid">{{post.firstname+" "+post.lastname}}</span><br>
+                        <span style="font-size: 14px; color: gray">{{post.date}}</span>
+                    </div>
+                </div>
+                <div *ngIf="myProfile">
+                    <button mat-icon-button [matMenuTriggerFor]="menu" class="hover">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="deletePost(post.id)">
+                            <span>Удалить запись</span>
+                        </button>
+                    </mat-menu>
+                </div>
+            </div>
+            <div style="margin: 0 20px">
+                <p *ngIf="post.content.text">{{post.content.text}}</p>
+                <div style="display: flex;justify-content: center;width:100%" *ngIf="post.content.image">
+                    <img style="max-height: 400px;width: 100%; image-rendering: crisp-edges;object-fit: contain" [src]=post.content.image alt="post">
+                </div>
+            </div>
+
+        </div>
+        <mat-divider *ngIf="i<news.length-1"></mat-divider>
+    </div>
+</div>
+

@@ -1,0 +1,48 @@
+<div class ="title">
+    <div style="margin-left: 10px">
+        <img src="/assets/logo.png" alt="">
+        <div>
+            <span>ФСБook</span>
+        </div>
+        </div>
+    <div *ngIf="isAuth" style="position: relative">
+        <form class="search-form" autocomplete="off" >
+            <mat-form-field style="height: 20px" class="example-full-width" appearance="standard">
+                <mat-icon matPrefix>search</mat-icon>
+                <input [(ngModel)]="searchText" [ngModelOptions]="{standalone:true}" (input)="searchChange()" type="text" f matInput placeholder="Поиск">
+            </mat-form-field>
+        </form>
+        <div style="display:flex;flex-direction:column;justify-content: flex-start;position: absolute;max-height: 50vh; top:100%;width: 150%;padding: 0;background-color: white;overflow-y: scroll" class="panel" *ngIf="searchText!==''">
+            <div  *ngFor="let user of users;index as i;">
+                <div class="friends-list-entry" style="cursor: pointer;padding: 10px 10px" (click)="searchText=''" [routerLink]="'/id'+user.id">
+                    <div style="display: flex;gap: 20px;align-items: center">
+                        <img  style="width: 80px;height: 80px;border-radius: 50%" [src]=user.avatar alt="avatar">
+                        <div>
+                            <p  style="font-size: 14px;margin: 0 0 10px 0;cursor: pointer">{{user.firstname+" "+user.lastname}}</p>
+                        </div>
+                    </div>
+                </div>
+                <mat-divider *ngIf="i<users.length-1"></mat-divider>
+           </div>
+        </div>
+    </div>
+    <div *ngIf="isAuth" class="header-avatar hover"  [matMenuTriggerFor]="menu">
+        <img alt="avatar" [src]=avatar>
+        <mat-menu #menu="matMenu" style="padding: 0">
+            <a href="http://localhost:3000" style="text-decoration: none">
+                <div *ngIf="isAdmin">
+                    <button mat-menu-item >
+                        <span>Администрирование</span>
+                    </button>
+                </div>
+            </a>
+            <button mat-menu-item (click)="logout()">
+                <span>Выйти</span>
+            </button>
+        </mat-menu>
+    </div>
+</div>
+
+<div class="content" >
+    <router-outlet></router-outlet>
+</div>
