@@ -14,6 +14,7 @@ export default class EventManager {
         this.up=0
         this.down=0;
     }
+
     onClick(e){
         this.shot()
     }

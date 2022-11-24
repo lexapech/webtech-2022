@@ -110,7 +110,7 @@ export default class SpriteManager {
     }
 
     draw(entity,view){
-        if(entity.class!=="" && entity.class!=="bullet") {
+        if(entity.class!=="" && entity.class!=="bullet" && entity.name!=="hatch" && entity.class!=="bonus") {
             let image = this.getEntityImage(entity,( entity.vx!==0 || entity.vy!==0)?"walk":"idle")
             /*this.ctx.strokeRect((-view.x + entity.offsetx + entity.x) * view.zoom + this.ctx.canvas.clientWidth / 2,
                 (-view.y + entity.offsety + entity.y - image.h) * view.zoom + this.ctx.canvas.clientHeight / 2,

@@ -294,6 +294,22 @@
                  "height":48,
                  "id":30,
                  "name":"scorpio",
+                 "properties":[
+                        {
+                         "name":"collision_size",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":48,
@@ -306,6 +322,22 @@
                  "height":48,
                  "id":31,
                  "name":"scorpio",
+                 "properties":[
+                        {
+                         "name":"collision_size",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":48,
@@ -318,6 +350,22 @@
                  "height":48,
                  "id":32,
                  "name":"scorpio",
+                 "properties":[
+                        {
+                         "name":"collision_size",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":48,
@@ -330,6 +378,22 @@
                  "height":48,
                  "id":33,
                  "name":"scorpio",
+                 "properties":[
+                        {
+                         "name":"collision_size",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":48,
@@ -342,6 +406,22 @@
                  "height":48,
                  "id":34,
                  "name":"scorpio",
+                 "properties":[
+                        {
+                         "name":"collision_size",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":48,
@@ -354,6 +434,22 @@
                  "height":48,
                  "id":35,
                  "name":"scorpio",
+                 "properties":[
+                        {
+                         "name":"collision_size",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":48,
@@ -366,6 +462,22 @@
                  "height":48,
                  "id":36,
                  "name":"scorpio",
+                 "properties":[
+                        {
+                         "name":"collision_size",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":48,
@@ -378,6 +490,22 @@
                  "height":48,
                  "id":37,
                  "name":"scorpio",
+                 "properties":[
+                        {
+                         "name":"collision_size",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":48,
@@ -390,6 +518,22 @@
                  "height":48,
                  "id":38,
                  "name":"scorpio",
+                 "properties":[
+                        {
+                         "name":"collision_size",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":48,
@@ -402,6 +546,22 @@
                  "height":48,
                  "id":39,
                  "name":"scorpio",
+                 "properties":[
+                        {
+                         "name":"collision_size",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":48,
@@ -414,6 +574,22 @@
                  "height":48,
                  "id":40,
                  "name":"scorpio",
+                 "properties":[
+                        {
+                         "name":"collision_size",
+                         "type":"float",
+                         "value":0.5
+                        }, 
+                        {
+                         "name":"health",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"radius",
+                         "type":"int",
+                         "value":200
+                        }],
                  "rotation":0,
                  "visible":true,
                  "width":48,

@@ -38,7 +38,7 @@ export default class PhysicsManager {
     }
 
     checkCollisions() {
-        let checkEnt = this.getEntities().filter(x=>(x.class==="bullet" || x.class==="enemy" || x.class==="player"|| x.class==="portal") && this.entity !== x)
+        let checkEnt = this.getEntities().filter(x=>(x.class==="bullet" || x.class==="bonus"  || x.class==="enemy" || x.class==="player"|| x.class==="portal") && this.entity !== x)
         let collisions=[]
         for (let col of checkEnt) {
             let Acenterx=this.entity.x+this.entity.vx+this.entity.w/2
@@ -99,7 +99,25 @@ export default class PhysicsManager {
                     Math.pow(dy, 2)))
                 let vx = dx / len
                 let vy = dy / len
-                if(len<200 && len>10) {
+                let steps = Math.ceil(len/16)
+                let step = len / steps
+                let canSee=true
+                for(let i=0;i<steps;i++) {
+                    let x =this.entity.x+ step*i*vx
+                    let y =this.entity.y+ step*i*vy
+                    let tmp = Object.assign({},this.entity)
+                    tmp.x=x
+                    tmp.y=y
+                    tmp.vx=0
+                    tmp.w=0
+                    tmp.h=0
+                    tmp.vy=0
+                    if (!this.canStep(tmp,false)) {
+                        canSee=false
+                        break
+                    }
+                }
+                if(canSee&& len<this.entity.radius && len>10) {
                     this.entity.vx=vx
                     this.entity.vy=vy
                 }

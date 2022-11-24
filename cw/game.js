@@ -4,6 +4,12 @@ window.addEventListener("load",()=>{
     console.log("document loaded")
 
     let game = new GameManager()
+
+    let retry=document.querySelector("#retry")
+    retry.addEventListener("click",()=>{
+        document.querySelector("#retry-container").style.display="none"
+        game.loadMap(game.maps[0])
+    })
 })
 
 let convertColor = (hex) => {

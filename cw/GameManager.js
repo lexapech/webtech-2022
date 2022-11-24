@@ -12,21 +12,28 @@ export default class GameManager {
             })
             this.ctx=this.initCanvas()
             this.screenAim=undefined
-            this.mapManager = new MapManager(this.ctx,"map1")
-            this.spriteManager = new SpriteManager(this.ctx)
-            this.mapManager.loadMap(()=>{
-                this.spriteManager.loadAtlas(this.afterMapLoaded.bind(this))
-            })
+            this.maps=["map1","map2"]
+            this.currentMapIndex=0
             this.view={x:200,y:200,zoom:4}
+            this.spriteManager = new SpriteManager(this.ctx)
             this.audioManager = new AudioManager()
             this.audioManager.loadArray(["shot.mp3","kill.mp3","hit.mp3","portal.mp3","steps.mp3"])
-                this.eventManager = new EventManager(this.setPlayerSpeed.bind(this),this.aim.bind(this),this.shot.bind(this))
+            this.eventManager = new EventManager(this.setPlayerSpeed.bind(this),this.aim.bind(this),this.shot.bind(this))
+            this.loadMap(this.maps[this.currentMapIndex])
         }))
     }
 
+    loadMap(map) {
+        this.mapManager = new MapManager(this.ctx,map)
+        this.mapManager.loadMap(()=>{
+            this.spriteManager.loadAtlas(this.afterMapLoaded.bind(this))
+        })
+    }
+
     update() {
-        this.entities = this.entities.filter(x=>{return( x.lifetime>0 || x.lifetime===undefined) && (x.health>0 || x.health===undefined)})
         if(this.player) {
+        this.entities = this.entities.filter(x=>{return( x.lifetime>0 || x.lifetime===undefined) && (x.health>0 || x.health===undefined)})
+
             this.player.aimPoint = {
                 x: (this.screenAim.x - this.ctx.canvas.clientWidth / 2) / this.view.zoom + this.view.x,
                 y: (this.screenAim.y - this.ctx.canvas.clientHeight / 2) / this.view.zoom + this.view.y
@@ -38,12 +45,12 @@ export default class GameManager {
                 }
                 this.player.soundTimer--
             }
-        }
+
 
         for(let entity of this.entities) {
             entity.update()
         }
-
+            if(!this.player) return
         this.view.x=this.player.x
         this.view.y=this.player.y
         this.mapManager.drawMap(this.ctx,this.view,this.drawEntities.bind(this))
@@ -53,6 +60,7 @@ export default class GameManager {
         this.ctx.font = '48px Roboto sans-serif';
         this.ctx.fillStyle="black"
         this.ctx.fillText(`Score: ${this.player.score}`, 10, 100);
+        }
     }
 
     drawEntities(layer) {
@@ -67,6 +75,8 @@ export default class GameManager {
 
 
     afterMapLoaded(){
+        if(this.currentMapIndex===0)
+            this.startTime=Date.now()
 
         this.wallTiles = this.mapManager.getWalls()
         this.entities =  this.mapManager.getObjects().map(x=>x)
@@ -82,10 +92,14 @@ export default class GameManager {
         })
         this.entities = this.entities.map(x=>x.extend({update: ()=>{},vx:0,vy:0}))
         let portal = this.entities.find(x=>x.class==="portal")
-        portal.collision={width:0.9,height:0.4}
+        portal.collision={width: portal.name==="hatch"?0.2:0.9, height: portal.name==="hatch"?0.2:0.4}
         let player = this.entities.find(x=>x.class==="player")
         let gun = this.entities.find(x=>x.class==="gun")
         let bullet = this.entities.find(x=>x.class==="bullet")
+        let bonus = this.entities.filter(x=>x.class==="bonus")
+        for(let bn of bonus) {
+            bn.collision={width:1.0,height:1.0}
+        }
         this.entities = this.entities.filter(x=>{ return x.class!=="gun" && x.class!=="bullet"})
         this.initPlayer(player,gun,bullet)
         for(let enemy of this.entities.filter(x=>{ return x.class==="enemy"}))
@@ -97,8 +111,9 @@ export default class GameManager {
     initEnemy(entity) {
         entity.vx=0
         entity.vy=0
-        entity.health=10
-        entity.collision={width:0.5,height:0.5}
+        //entity.health=10
+        //entity.collision={width:0.5,height:0.5}
+        entity.collision={width:entity.collision_size,height:entity.collision_size}
         entity.target  = this.player
         entity.onHit = (hit)=>{
 
@@ -115,19 +130,55 @@ export default class GameManager {
 
     onWin(){
         console.log("level passed")
+
+        if(this.currentMapIndex<this.maps.length-1) {
+            this.entities=[]
+            this.loadMap(this.maps[++this.currentMapIndex])
+        }
+        else {
+            let rec = localStorage["nt.records"]
+            if(rec) {
+                try {
+                    rec = JSON.parse(rec)
+                }
+                catch (e) {
+                    rec=[]
+                }
+            }
+            else
+            {
+                rec=[]
+            }
+            let time =new Date( Date.now()-this.startTime)
+            rec.push({playerName: localStorage["nt.username"], playerScore: this.player.score, time: time})
+            rec=rec.sort((a,b)=>b.playerScore-a.playerScore)
+            rec=rec.filter((v,i) => i < 10)
+                localStorage["nt.records"]=JSON.stringify(rec)
+            console.log("win")
+            location.href="records.html"
+        }
     }
     onGameOver(){
         this.audioManager.playSound("kill.mp3",0.5,false)
         console.log("game over")
+        this.player=undefined
+        document.querySelector("#retry-container").style.display="flex"
+
     }
 
     initPlayer(entity, gun,bullet) {
+        let health = 5
+        let score = 0
+        if(this.player) {
+            health = this.player.health
+            score = this.player.score
+        }
         this.player = entity;
         this.player.vx=0
         this.player.vy=0
         this.player.shot=0
-        this.player.health=5
-        this.player.score=0
+        this.player.health = health
+        this.player.score = score
         this.player.collision={width:1.0,height:0.8}
         this.player.gun = gun
         this.player.bullet = bullet
@@ -152,6 +203,11 @@ export default class GameManager {
                 clearInterval(this.mainTimer)
                 this.onWin()
             }
+            else if (hit.class==="bonus") {
+                this.entities=this.entities.filter(x=>x!==hit)
+                this.audioManager.playSound("portal.mp3",0.5,false)
+                this.player.health++
+            }
         }
         this.player.physics =new PhysicsManager(this.player,this.wallTiles,()=>this.entities)
         this.player.update=this.player.physics.update.bind(this.player.physics)
@@ -168,11 +224,12 @@ export default class GameManager {
     }
 
     shot() {
+        if(!this.player) return
         this.audioManager.playSound("shot.mp3",0.3,false)
         this.player.shot=1
         let bullet  =Object.assign( {},this.player.bullet)
         let len = Math.sqrt((Math.pow((this.player.aimPoint.x-this.player.x),2)+Math.pow((this.player.aimPoint.y-this.player.y),2)))
-        bullet.x= this.player.x+(this.player.aimPoint.x-this.player.x)/len*10+this.player.image.width/2
+        bullet.x= this.player.x+(this.player.aimPoint.x-this.player.x)/len*10+(this.player.lastDir===1? this.player.image.width/2:0)
         bullet.y= this.player.y+(this.player.aimPoint.y-this.player.y)/len*10+this.player.image.height/2
 
         bullet.vx=(this.player.aimPoint.x-this.player.x)/len*3
