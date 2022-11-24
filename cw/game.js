@@ -8,7 +8,8 @@ window.addEventListener("load",()=>{
     let retry=document.querySelector("#retry")
     retry.addEventListener("click",()=>{
         document.querySelector("#retry-container").style.display="none"
-        game.loadMap(game.maps[0])
+        game.currentMapIndex=0
+        game.loadMap(game.maps[game.currentMapIndex])
     })
 })
 

@@ -170,7 +170,7 @@ export default class GameManager {
         let health = 5
         let score = 0
         if(this.player) {
-            health = this.player.health
+            //
             score = this.player.score
         }
         this.player = entity;
