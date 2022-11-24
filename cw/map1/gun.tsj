@@ -1,0 +1,15 @@
+{ "columns":1,
+ "image":"gun.png",
+ "imageheight":23,
+ "imagewidth":26,
+ "margin":0,
+ "name":"gun",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.9.2",
+ "tileheight":23,
+ "tilewidth":26,
+ "transparentcolor":"#ff80ff",
+ "type":"tileset",
+ "version":"1.9"
+}

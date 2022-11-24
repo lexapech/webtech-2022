@@ -1,0 +1,15 @@
+{ "columns":8,
+ "image":"sewers-floor.png",
+ "imageheight":32,
+ "imagewidth":256,
+ "margin":0,
+ "name":"sewers-floor",
+ "spacing":0,
+ "tilecount":8,
+ "tiledversion":"1.9.2",
+ "tileheight":32,
+ "tilewidth":32,
+ "transparentcolor":"#7f92ff",
+ "type":"tileset",
+ "version":"1.9"
+}

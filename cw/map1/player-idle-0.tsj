@@ -1,0 +1,15 @@
+{ "columns":1,
+ "image":"player-idle-0.png",
+ "imageheight":19,
+ "imagewidth":15,
+ "margin":0,
+ "name":"player-idle-0",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.9.2",
+ "tileheight":19,
+ "tilewidth":15,
+ "transparentcolor":"#3f497f",
+ "type":"tileset",
+ "version":"1.9"
+}

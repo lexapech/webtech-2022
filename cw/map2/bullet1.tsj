@@ -1,0 +1,15 @@
+{ "columns":1,
+ "image":"bullet1.png",
+ "imageheight":18,
+ "imagewidth":18,
+ "margin":0,
+ "name":"bullet1",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.9.2",
+ "tileheight":18,
+ "tilewidth":18,
+ "transparentcolor":"#000000",
+ "type":"tileset",
+ "version":"1.9"
+}
