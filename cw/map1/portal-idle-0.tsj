@@ -1,0 +1,15 @@
+{ "columns":1,
+ "image":"portal-idle-0.png",
+ "imageheight":64,
+ "imagewidth":64,
+ "margin":0,
+ "name":"portal-idle-0",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.9.2",
+ "tileheight":64,
+ "tilewidth":64,
+ "transparentcolor":"#7f92ff",
+ "type":"tileset",
+ "version":"1.9"
+}

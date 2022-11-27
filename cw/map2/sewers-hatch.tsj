@@ -1,0 +1,15 @@
+{ "columns":2,
+ "image":"sewers-hatch.png",
+ "imageheight":32,
+ "imagewidth":68,
+ "margin":0,
+ "name":"sewers-hatch",
+ "spacing":4,
+ "tilecount":2,
+ "tiledversion":"1.9.2",
+ "tileheight":32,
+ "tilewidth":32,
+ "transparentcolor":"#7f92ff",
+ "type":"tileset",
+ "version":"1.9"
+}

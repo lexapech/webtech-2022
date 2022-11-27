@@ -1,0 +1,15 @@
+{ "columns":1,
+ "image":"rat-idle-0.png",
+ "imageheight":24,
+ "imagewidth":24,
+ "margin":0,
+ "name":"rat-idle-0",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.9.2",
+ "tileheight":24,
+ "tilewidth":24,
+ "transparentcolor":"#7f92ff",
+ "type":"tileset",
+ "version":"1.9"
+}

@@ -1,0 +1,15 @@
+{ "columns":3,
+ "image":".\/nt tiles 6.png",
+ "imageheight":16,
+ "imagewidth":48,
+ "margin":0,
+ "name":"nt tiles 6",
+ "spacing":0,
+ "tilecount":3,
+ "tiledversion":"1.9.2",
+ "tileheight":16,
+ "tilewidth":16,
+ "transparentcolor":"#3f497f",
+ "type":"tileset",
+ "version":"1.9"
+}

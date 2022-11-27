@@ -1,0 +1,15 @@
+{ "columns":1,
+ "image":"heart.png",
+ "imageheight":12,
+ "imagewidth":13,
+ "margin":0,
+ "name":"heart",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.9.2",
+ "tileheight":12,
+ "tilewidth":13,
+ "transparentcolor":"#7f92ff",
+ "type":"tileset",
+ "version":"1.9"
+}

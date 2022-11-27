@@ -1,0 +1,15 @@
+{ "columns":1,
+ "image":"scorpio-idle-0.png",
+ "imageheight":48,
+ "imagewidth":48,
+ "margin":0,
+ "name":"scorpio-idle-0",
+ "spacing":0,
+ "tilecount":1,
+ "tiledversion":"1.9.2",
+ "tileheight":48,
+ "tilewidth":48,
+ "transparentcolor":"#7f92ff",
+ "type":"tileset",
+ "version":"1.9"
+}

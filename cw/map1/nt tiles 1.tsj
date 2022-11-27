@@ -1,0 +1,23 @@
+{ "columns":4,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json",
+         "target":"nt tiles 1.tsj"
+        }
+    },
+ "image":".\/nt tiles 1.png",
+ "imageheight":32,
+ "imagewidth":128,
+ "margin":0,
+ "name":"nt tiles 1",
+ "spacing":0,
+ "tilecount":4,
+ "tiledversion":"1.9.2",
+ "tileheight":32,
+ "tilewidth":32,
+ "transparentcolor":"#3f497f",
+ "type":"tileset",
+ "version":"1.9"
+}
