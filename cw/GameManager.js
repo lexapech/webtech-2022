@@ -60,6 +60,7 @@ export default class GameManager {
         this.ctx.font = '48px Roboto sans-serif';
         this.ctx.fillStyle="black"
         this.ctx.fillText(`Score: ${this.player.score}`, 10, 100);
+            this.ctx.fillText(`Bullets: ${this.player.bullets}`, 10, 200);
         }
     }
 
@@ -120,6 +121,7 @@ export default class GameManager {
             entity.health--
             this.player.score++
             if(entity.health===0) {
+                this.player.bullets+=50
                 this.audioManager.playSound("kill.mp3",0.5,false)
                 this.player.score+=5
             }
@@ -170,12 +172,14 @@ export default class GameManager {
         let health = 5
         let score = 0
         if(this.player) {
-            //
+            health=this.player.health
             score = this.player.score
         }
+
         this.player = entity;
         this.player.vx=0
         this.player.vy=0
+        this.player.bullets=100
         this.player.shot=0
         this.player.health = health
         this.player.score = score
@@ -225,6 +229,7 @@ export default class GameManager {
 
     shot() {
         if(!this.player) return
+        this.player.bullets--
         this.audioManager.playSound("shot.mp3",0.3,false)
         this.player.shot=1
         let bullet  =Object.assign( {},this.player.bullet)
