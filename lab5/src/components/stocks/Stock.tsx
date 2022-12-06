@@ -16,8 +16,8 @@ export default function Stock(props:StockProps) {
         <div className="panel flex justify-between p-5" style={{width:"min(600px, 100%)"}}>
         <div className="flex flex-col gap-5" style={{flex:"90%"}}>
             <div className="flex justify-between ">
-                <p className="font-bold text-xl">{props.code}</p>
-                <p className="text-xl">{props.name}</p>
+                <p className="font-bold md:text-xl sm:text-xs">{props.code}</p>
+                <p className="md:text-xl sm:text-xs">{props.name}</p>
                 <div></div>
             </div>
             <div>

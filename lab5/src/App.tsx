@@ -6,6 +6,9 @@ import Brokers from "./components/brokers/Brokers";
 import Stocks from "./components/stocks/Stocks";
 import Start from "./components/start/Start";
 
+export let API_ENDPOINT='http://localhost:3100/api/';
+
+
 function App() {
   return (
       <BrowserRouter>

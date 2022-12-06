@@ -9,14 +9,15 @@ import {
     TableRow,
     TextField
 } from "@mui/material";
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import Header from "../header/Header";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../app/store";
 import {setSpeed, setStartDate, setStarted} from "../../app/startSlice";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import {Price} from "../stocks/Stocks";
+import {fetchStocks, IStock, Price} from "../stocks/Stocks";
+import {pushStocks} from "../../app/stocksSlice";
 function StartStopButton({started,onClick}:{started:boolean,onClick: React.MouseEventHandler<HTMLButtonElement>}) {
     if (started) {
         return <Button variant="contained" color="error" onClick={onClick}>СТОП</Button>
@@ -50,7 +51,7 @@ function Change({value}:{value:number}) {
 
 function StockTable(props:{stocks:ITradingStock[]}) {
     return (
-        <TableContainer component={Paper} sx={{overflowY:"scroll",maxHeight:"80vh"}}>
+        <TableContainer component={Paper}>
         <Table stickyHeader >
             <TableHead>
                 <TableRow>
@@ -83,6 +84,7 @@ function getData() {
     let data:ITradingStock[]=[]
     data.push({code:"DICK",name:"DICK Corporation",price:999.0,change:100})
     data.push({code:"COCK",name:"COCK Company",price:201.0,change:-1.0})
+    data.push({code:"COCKS",name:"COCK Company",price:201.0,change:-1.0})
     return data
 }
 
@@ -92,10 +94,24 @@ export default function Start() {
     const speed = useSelector((state: RootState) => state.startState.speed)
     const started = useSelector((state: RootState) => state.startState.started)
     const startDate = useSelector((state: RootState) => state.startState.startDate)
-    console.log(speed)
-    const dispatch = useDispatch()
+    const stocks = useSelector((state: RootState) => state.stocksState.stocksState)
+    const stocksFetched = useRef(false)
 
+
+    const dispatch = useDispatch()
+    useEffect(()=>{
+        if(stocks.length===0 && !stocksFetched.current) {
+            stocksFetched.current = true
+            fetchStocks((response: IStock[]) => {
+                dispatch(pushStocks({stocksState: response}))
+                console.log("use effect")
+            })
+        }
+    },[])
     let startHandler = () => {
+        if(!started) {
+            console.log(stocks.filter(stock=>stock.active))
+        }
         dispatch(setStarted( !started));
     }
 
@@ -135,7 +151,11 @@ export default function Start() {
                     <span>Текущая дата: {currentDate}</span>
                     <StartStopButton started={started} onClick={startHandler}/>
                 </div>
-                <StockTable stocks={getData()}/>
+                <div className="flex justify-center" >
+                    <div  style={{width:"min(800px, 100vw)",margin:"0"}}>
+                        <StockTable stocks={getData()}/>
+                    </div>
+                </div>
             </div>
         )
     }

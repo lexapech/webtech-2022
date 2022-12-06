@@ -8,7 +8,7 @@ import {
     TableContainer, TableHead,
     TableRow
 } from "@mui/material";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Line } from "react-chartjs-2";
 import Header from "../header/Header";
 import Stock from "./Stock";
@@ -27,6 +27,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import {RootState} from "../../app/store";
 import {pushStocks, setActivated} from "../../app/stocksSlice";
 import {useDispatch, useSelector} from "react-redux";
+import axios from "axios";
+import {API_ENDPOINT} from "../../App";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -42,19 +44,19 @@ interface StockDetailsProps {
     onClose: ()=>void
 }
 
-function getData():StockData[] {
-    const labels = ['10/6/2021', '10/7/2021', '10/8/2021',
-        '10/11/2021', '10/12/2021', '10/13/2021', '10/14/2021',
-        '10/15/2021', '10/18/2021', '10/19/2021', '10/20/2021',
-        '10/21/2021', '10/22/2021', '10/25/2021', '10/26/2021',
-        '10/27/2021', '10/28/2021', '10/29/2021', '11/1/2021',
-        '11/2/2021', '11/3/2021', '11/4/2021', '11/5/2021' ];
-    const values = [139.47, 143.06, 144.03, 142.27, 143.23,
-        141.24, 142.11, 143.77, 143.45, 147.01, 148.7, 148.81, 149.69,
-        148.68, 149.33, 149.36, 149.82, 147.22, 148.99, 148.66, 150.39,
-        151.58, 151.89]
-    return labels.map((date,i)=>{
-        return {date:date,open:values[i],close:values[i]}
+export function fetchStocks(callback:Function) {
+    axios.get(API_ENDPOINT+'stocks/all').then(res=>{
+        callback(res.data)
+    }).catch(e=>{
+        console.log(e)
+    })
+}
+
+function fetchStockDetails(code:string, callback:Function) {
+    axios.get(API_ENDPOINT+'stocks/details?code='+code).then(res=>{
+        callback(res.data)
+    }).catch(e=>{
+        console.log(e)
     })
 }
 
@@ -85,7 +87,7 @@ function Chart(props:{code: string,data:StockData[]}) {
 
 function StockTable(props:{data:StockData[]}) {
     return (
-        <TableContainer component={Paper} sx={{overflowY:"scroll",maxHeight:"50vh"}}>
+        <TableContainer component={Paper}>
             <Table stickyHeader >
                 <TableHead>
                     <TableRow>
@@ -121,6 +123,14 @@ export function Price({value}:{value:number}) {
 
 function StockDetails(props:StockDetailsProps) {
 
+    const [data,setData] = useState<StockData[]>([])
+    useEffect(()=>{
+        if(props.code)
+            fetchStockDetails(props.code,(response:StockData[])=>{
+                setData(response)
+            })
+    },[props.code])
+
     return (
         <Dialog maxWidth={false} PaperProps={{ sx:{maxWidth:"min(800px, 100vw)",margin:"0"} }} onClose={props.onClose} open={props.code!==null}>
             <DialogTitle sx={{padding:"15px 5px"}}>
@@ -132,10 +142,10 @@ function StockDetails(props:StockDetailsProps) {
                 </div>
                 </DialogTitle>
 
-            <div style={{width:"min(800px, 100vw",overflow:"hidden"}}>
-                <Chart code={props.code?props.code:""} data={getData()}/>
+            <div style={{width:"min(800px, 100vw",overflowY:"scroll"}}>
+                <Chart code={props.code?props.code:""} data={data}/>
                 <div >
-                    <StockTable data={getData()}/>
+                    <StockTable data={data}/>
                 </div>
             </div>
 
@@ -149,17 +159,10 @@ interface StockData {
     close:number
 }
 
-interface IStock {
+export interface IStock {
     code:string,
     name:string,
     active:boolean
-}
-
-function getStocks() {
-    let res:IStock[] = []
-    res.push({code:"TSLA",name:"Tesla",active:true})
-    res.push({code:"DICK",name:"Dick Corporation",active:false})
-    return res
 }
 
 
@@ -167,27 +170,27 @@ function getStocks() {
 export default function Stocks() {
 
     const stocksState = useSelector((state: RootState) => state.stocksState.stocksState)
+    const stocksFetched = useRef(false)
     const dispatch = useDispatch()
     let [stocks,setStocks] = useState<IStock[]>([])
     useEffect(()=>{
-        let temp = getStocks()
-
-        setStocks(temp)
-        if(stocksState.length===0)
-            dispatch(pushStocks({stocksState:temp}))
-        console.log("use effect")
+        if(!stocksFetched.current) {
+            stocksFetched.current=true
+            fetchStocks((response: IStock[]) => {
+                setStocks(response)
+                if (stocksState.length === 0)
+                    dispatch(pushStocks({stocksState: response}))
+            })
+        }
     },[])
 
     const [details,setDetails] = useState<null|string>(null)
 
     let stockClickHandler= (code:string)=>{
-
         setDetails(code)
-        console.log(code)
     }
     let stockCheckHandler= (code:string,checked:boolean)=>{
         dispatch(setActivated({code: code,active:checked}))
-        console.log(code,checked)
     }
 
     let active = (code:string) => {

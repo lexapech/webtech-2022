@@ -1,7 +1,7 @@
 import {Avatar, IconButton, TextField} from "@mui/material";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CloseIcon from "@mui/icons-material/Close";
-import React from "react";
+import React, {useState} from "react";
 
 export interface IBroker {
     name:string,
@@ -13,7 +13,22 @@ export interface BrokerProps {
     onRemove:Function
 }
 
-export default function Broker({broker,onFundsChange,onRemove}: BrokerProps) {
+export default function Broker(props: BrokerProps) {
+
+    const [funds,setFunds] = useState(props.broker.funds.toString())
+    const [valid,setValid] = useState(true)
+
+    let onFundsChange = (e:React.ChangeEvent<HTMLTextAreaElement>)=>{
+        setFunds(e.currentTarget.value)
+
+        if(isNaN(+e.currentTarget.value)) {
+            setValid(false)
+            return
+        }
+        props.onFundsChange(props.broker.name,+e.currentTarget.value)
+        setValid(true)
+    }
+
     return (
         <div className="panel flex justify-between" style={{width:"min(600px, 100%)"}}>
             <div className="flex gap-5 p-4">
@@ -23,10 +38,12 @@ export default function Broker({broker,onFundsChange,onRemove}: BrokerProps) {
                     </Avatar>
                 </div>
                 <div className="flex flex-col">
-                    <p className="text-xl font-bold">{broker.name}</p>
+                    <p className="text-xl font-bold">{props.broker.name}</p>
                     <TextField
-                        value={broker.funds}
-                        onChange={(e)=>onFundsChange(broker.name,e.currentTarget.value)}
+                        error={!valid}
+                        type="number"
+                        value={funds}
+                        onChange={onFundsChange}
                         style={{width:100}}
                         label="Средства"
                         variant="standard"
@@ -35,7 +52,7 @@ export default function Broker({broker,onFundsChange,onRemove}: BrokerProps) {
                 </div>
             </div>
             <div className="flex flex-col justify-center pr-5">
-                <IconButton onClick={()=>onRemove(broker.name)} aria-label="delete">
+                <IconButton onClick={()=>props.onRemove(props.broker.name)} aria-label="delete">
                     <CloseIcon />
                 </IconButton>
             </div>

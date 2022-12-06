@@ -1,15 +1,30 @@
 import {Button, Dialog, DialogTitle, Fab, TextField} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {IBroker} from "./Broker";
 import Broker from "./Broker";
 import Header from "../header/Header";
+import axios from "axios";
+import {API_ENDPOINT} from "../../App";
 
-function InitBrokers():IBroker[] {
-    let array:IBroker[]=[]
-    array.push({name:"broker", funds:0})
-    array.push({name:"not broker", funds:1})
-    return array
+function fetchBrokers(callback:Function) {
+    axios.get<{data:IBroker[]}>(API_ENDPOINT+'brokers/all').then(res=>{
+        callback(res.data)
+    }).catch(e=>{
+        console.log(e)
+    })
+}
+
+function postBroker(newBroker:IBroker) {
+    axios.post(API_ENDPOINT+'brokers/new',{...newBroker}).catch(e=>{
+        console.log(e)
+    })
+}
+
+function deleteBroker(broker:string) {
+    axios.post(API_ENDPOINT+'brokers/delete',{name:broker}).catch(e=>{
+        console.log(e)
+    })
 }
 
 function AddBroker(props: {open:boolean, onClose: Function  }) {
@@ -62,12 +77,17 @@ function AddBroker(props: {open:boolean, onClose: Function  }) {
 
 export default function Brokers() {
 
-    const [brokers,setBrokers] = useState<IBroker[]>(InitBrokers())
+    const [brokers,setBrokers] = useState<IBroker[]>([])
+    useEffect(()=>{
+        fetchBrokers(((brokers:IBroker[])=>setBrokers(brokers)))
+    },[])
+
+
     const [openAddBroker,setOpenAddBroker] = useState(false)
 
     let brokerFundsChangeHandler = (name:string,funds:number)=> {
         let newBrokers = brokers.map(broker=>{
-            if(broker.name===name) broker.funds=funds
+            if(broker.name===name) broker.funds = funds
             return broker
         })
         setBrokers(newBrokers)
@@ -79,6 +99,7 @@ export default function Brokers() {
 
     let removeBroker = (name: string)=>{
         let newBrokers = brokers.filter(broker=>broker.name!==name)
+        deleteBroker(name)
         setBrokers(newBrokers)
     }
 
@@ -86,6 +107,7 @@ export default function Brokers() {
         setOpenAddBroker(false)
         if(broker) {
             let newBrokers=[...brokers,broker]
+            postBroker(broker)
             setBrokers(newBrokers)
         }
     }

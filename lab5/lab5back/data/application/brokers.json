@@ -1,0 +1,11 @@
+{
+  "table_name": "brokers",
+  "attrib": ["id","name","funds"],
+  "data": [
+    {
+      "id": "1",
+      "name": "Наташа",
+      "funds": 23.12
+    }
+  ]
+}
