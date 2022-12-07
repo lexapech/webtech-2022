@@ -11,6 +11,7 @@ export interface BrokerProps {
     broker: IBroker,
     onFundsChange: Function
     onRemove:Function
+    onFundsBlur: Function
 }
 
 export default function Broker(props: BrokerProps) {
@@ -43,6 +44,7 @@ export default function Broker(props: BrokerProps) {
                         error={!valid}
                         type="number"
                         value={funds}
+                        onBlur={()=>props.onFundsBlur(props.broker.name,funds)}
                         onChange={onFundsChange}
                         style={{width:100}}
                         label="Средства"

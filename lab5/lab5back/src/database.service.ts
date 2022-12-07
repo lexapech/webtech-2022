@@ -27,7 +27,7 @@ export default class DatabaseService {
 
     writeJson(obj, file) {
 
-        fs.writeFileSync('data/application' + file+'.json', JSON.stringify(obj,null,1), 'utf8')
+        fs.writeFileSync(path.resolve('data','application', file+'.json'), JSON.stringify(obj,null,1), 'utf8')
     }
 
     insert(data,into) {

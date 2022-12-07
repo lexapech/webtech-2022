@@ -21,7 +21,7 @@ export default function Stock(props:StockProps) {
                 <div></div>
             </div>
             <div>
-                <Button variant="outlined" onClick={()=>props.detailsClick(props.code)}>Подробнее</Button>
+                <Button variant="outlined"  onClick={()=>props.detailsClick(props.code)}>Подробнее</Button>
             </div>
         </div>
         <div className="flex flex-col justify-center">

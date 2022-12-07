@@ -21,6 +21,12 @@ function postBroker(newBroker:IBroker) {
     })
 }
 
+function updateBroker(broker:string,funds:number) {
+    axios.post(API_ENDPOINT+'brokers/update',{name:broker,funds: funds}).catch(e=>{
+        console.log(e)
+    })
+}
+
 function deleteBroker(broker:string) {
     axios.post(API_ENDPOINT+'brokers/delete',{name:broker}).catch(e=>{
         console.log(e)
@@ -86,6 +92,7 @@ export default function Brokers() {
     const [openAddBroker,setOpenAddBroker] = useState(false)
 
     let brokerFundsChangeHandler = (name:string,funds:number)=> {
+
         let newBrokers = brokers.map(broker=>{
             if(broker.name===name) broker.funds = funds
             return broker
@@ -96,6 +103,11 @@ export default function Brokers() {
     let openDialog = () => {
         setOpenAddBroker(true)
     }
+
+    let updateBrokersFunds = (name:string,funds:number)=>{
+        updateBroker(name,funds)
+    }
+
 
     let removeBroker = (name: string)=>{
         let newBrokers = brokers.filter(broker=>broker.name!==name)
@@ -127,7 +139,7 @@ export default function Brokers() {
                     </Fab>
                 </div>
                 {
-                    brokers.map((broker,index)=><Broker key={index} broker={broker} onRemove={removeBroker} onFundsChange={brokerFundsChangeHandler}></Broker>)
+                    brokers.map((broker,index)=><Broker key={index} onFundsBlur={updateBrokersFunds} broker={broker} onRemove={removeBroker} onFundsChange={brokerFundsChangeHandler}></Broker>)
                 }
             </div>
             <AddBroker open={openAddBroker} onClose={addBroker}/>

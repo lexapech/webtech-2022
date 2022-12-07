@@ -1,66 +1,71 @@
 {
-  "table_name": "stocks",
-  "attrib": ["id","code","name","active"],
-  "data": [
-    {
-      "id": "1",
-      "code": "AAPL",
-      "name": "Apple, Inc.",
-      "active": true
-    },
-    {
-      "id": "2",
-      "code": "AMD",
-      "name": "Advanced Micro Devices, Inc.",
-      "active": true
-    },
-    {
-      "id": "3",
-      "code": "AMZN",
-      "name": "Amazon.com, Inc.",
-      "active": true
-    },
-    {
-      "id": "4",
-      "code": "CSCO",
-      "name": "Cisco Systems, Inc.",
-      "active": true
-    },
-    {
-      "id": "5",
-      "code": "META",
-      "name": "Meta, Inc.",
-      "active": true
-    },
-    {
-      "id": "6",
-      "code": "MSFT",
-      "name": "Microsoft, Inc.",
-      "active": true
-    },
-    {
-      "id": "7",
-      "code": "NFLX",
-      "name": "NFLX Inc.",
-      "active": true
-    },
-    {
-      "id": "8",
-      "code": "QCOM",
-      "name": "QUALCOMM Incorporated",
-      "active": true
-    },
-    {
-      "id": "9",
-      "code": "SBUX",
-      "name": "Starbucks, Inc.",
-      "active": true
-    },
-    {
-      "id": "10",
-      "code": "TSLA",
-      "name": "Tesla, Inc.",
-      "active": true
-    }
-  ]
+ "table_name": "stocks",
+ "attrib": [
+  "id",
+  "code",
+  "name",
+  "active"
+ ],
+ "data": [
+  {
+   "id": "1",
+   "code": "AAPL",
+   "name": "Apple, Inc.",
+   "active": false
+  },
+  {
+   "id": "2",
+   "code": "AMD",
+   "name": "Advanced Micro Devices, Inc.",
+   "active": false
+  },
+  {
+   "id": "3",
+   "code": "AMZN",
+   "name": "Amazon.com, Inc.",
+   "active": false
+  },
+  {
+   "id": "4",
+   "code": "CSCO",
+   "name": "Cisco Systems, Inc.",
+   "active": false
+  },
+  {
+   "id": "5",
+   "code": "META",
+   "name": "Meta, Inc.",
+   "active": false
+  },
+  {
+   "id": "6",
+   "code": "MSFT",
+   "name": "Microsoft, Inc.",
+   "active": true
+  },
+  {
+   "id": "7",
+   "code": "NFLX",
+   "name": "NFLX Inc.",
+   "active": true
+  },
+  {
+   "id": "8",
+   "code": "QCOM",
+   "name": "QUALCOMM Incorporated",
+   "active": true
+  },
+  {
+   "id": "9",
+   "code": "SBUX",
+   "name": "Starbucks, Inc.",
+   "active": true
+  },
+  {
+   "id": "10",
+   "code": "TSLA",
+   "name": "Tesla, Inc.",
+   "active": true
+  }
+ ]
 }

@@ -21,6 +21,12 @@ export class BrokersController {
         this.brokersService.add(body)
         return res.status(200)
     }
+    @Post('update')
+    changeBroker(@Body() body: IBroker,@Res() res:Response) {
+        if(!body || !body.name || !body.funds) return res.status(400)
+        this.brokersService.update(body)
+        return res.status(200)
+    }
     @Post('delete')
     deleteBroker(@Body() body: { name:string },@Res() res:Response) {
         if(!body || !body.name) return res.status(400)
