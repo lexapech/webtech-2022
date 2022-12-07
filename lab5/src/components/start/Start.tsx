@@ -9,7 +9,7 @@ import {
     TableRow,
     TextField
 } from "@mui/material";
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Header from "../header/Header";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../app/store";
@@ -18,6 +18,10 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import {fetchStocks, IStock, Price} from "../stocks/Stocks";
 import {pushStocks} from "../../app/stocksSlice";
+
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3100');
 function StartStopButton({started,onClick}:{started:boolean,onClick: React.MouseEventHandler<HTMLButtonElement>}) {
     if (started) {
         return <Button variant="contained" color="error" onClick={onClick}>СТОП</Button>
@@ -50,9 +54,10 @@ function Change({value}:{value:number}) {
 }
 
 function StockTable(props:{stocks:ITradingStock[]}) {
+
     return (
-        <TableContainer component={Paper}>
-        <Table stickyHeader >
+        <TableContainer component={Paper} sx={{maxHeight:"calc(100vh - 136px)"}}>
+        <Table stickyHeader>
             <TableHead>
                 <TableRow>
                     <TableCell>Инструмент</TableCell>
@@ -80,12 +85,18 @@ function StockTable(props:{stocks:ITradingStock[]}) {
     )
 }
 
-function getData() {
-    let data:ITradingStock[]=[]
-    data.push({code:"DICK",name:"DICK Corporation",price:999.0,change:100})
-    data.push({code:"COCK",name:"COCK Company",price:201.0,change:-1.0})
-    data.push({code:"COCKS",name:"COCK Company",price:201.0,change:-1.0})
-    return data
+
+interface StartTradingDTO {
+    startDate:string,
+    speed:number,
+    stocks:{code: string, active: boolean}[]
+}
+
+interface StocksUpdateDTO {
+    last:boolean
+    open:boolean
+    date:string,
+    stocks:ITradingStock[]
 }
 
 
@@ -96,10 +107,49 @@ export default function Start() {
     const startDate = useSelector((state: RootState) => state.startState.startDate)
     const stocks = useSelector((state: RootState) => state.stocksState.stocksState)
     const stocksFetched = useRef(false)
-
-
+    const connectingStarted = useRef(false)
+    const [currentDate,setCurrentDate] = useState<Date>(new Date(startDate))
+    const [tradingStatus,setTradingStatus] = useState("")
+    const [tradingStocks,setTradingStocks] = useState<ITradingStock[]>([])
     const dispatch = useDispatch()
     useEffect(()=>{
+        if(!connectingStarted.current) {
+            connectingStarted.current = true
+            socket.on('connect', () => {
+
+                console.log("connected")
+
+                socket.on('disconnect', () => {
+                    console.log("disconnected")
+                    socket.off("connect")
+                    socket.off('disconnect');
+                    socket.off('update');
+                    connectingStarted.current = false
+                });
+
+                socket.on('update', (data:StocksUpdateDTO) => {
+                    setCurrentDate(new Date(data.date))
+                    if(data.last) setTradingStatus("Торги окончены.")
+                    else if(!data.open) setTradingStatus("Торги приостановлены.")
+                    else {
+                        setTradingStocks(data.stocks)
+                        setTradingStatus("Торги идут.")
+                    }
+
+                });
+
+                socket.emit('status',(res:string)=>{
+                    if(res==='running') {
+                        dispatch(setStarted(true))
+                    }
+                    console.log(res)
+                })
+
+            });
+            socket.connect()
+        }
+
+
         if(stocks.length===0 && !stocksFetched.current) {
             stocksFetched.current = true
             fetchStocks((response: IStock[]) => {
@@ -107,12 +157,31 @@ export default function Start() {
                 console.log("use effect")
             })
         }
-    },[])
-    let startHandler = () => {
-        if(!started) {
-            console.log(stocks.filter(stock=>stock.active))
+        else {
+            stocksFetched.current=true
         }
-        dispatch(setStarted( !started));
+        return ()=>{
+            connectingStarted.current = false
+            console.log("disconnected")
+            socket.off("connect")
+            socket.off('disconnect');
+            socket.off('update');
+            socket.disconnect()
+        }
+    },[])
+
+
+
+    let startHandler = () => {
+        if(!started && stocksFetched.current && !isNaN(+speed) && (+speed)>0 && !isNaN((new Date(startDate)).getTime())) {
+            dispatch(setStarted(true));
+            socket.emit('start',{startDate:startDate,speed:+speed,stocks: stocks} as StartTradingDTO)
+        }
+        else {
+            socket.emit('stop')
+            dispatch(setStarted(false));
+        }
+
     }
 
     let speedChangeHandler = (event: React.ChangeEvent<HTMLInputElement>)=>{
@@ -143,17 +212,19 @@ export default function Start() {
             </div>
         )
     }
-    let currentDate =(new Date).toLocaleDateString()
+
     let Trading = () => {
+
+
         return (
             <div>
                 <div className="panel flex justify-between items-center">
-                    <span>Текущая дата: {currentDate}</span>
+                    <span>Текущая дата: {currentDate.toLocaleDateString(undefined,{ year: 'numeric', month: 'long', day: 'numeric',weekday:"short"})}, {tradingStatus}</span>
                     <StartStopButton started={started} onClick={startHandler}/>
                 </div>
                 <div className="flex justify-center" >
-                    <div  style={{width:"min(800px, 100vw)",margin:"0"}}>
-                        <StockTable stocks={getData()}/>
+                    <div  style={{width:"min(800px, 100vw)",margin:"0",overflowY:"hidden"}}>
+                        <StockTable stocks={tradingStocks} />
                     </div>
                 </div>
             </div>

@@ -10,6 +10,10 @@ export class StocksController {
     getStocks(): string {
         return this.stocksService.getAll()
     }
+    @Get('dates')
+    getDates(): { min:Date,max:Date } {
+        return this.stocksService.getDateRange()
+    }
     @Get('details')
     getDetails(@Query('code') code:string,@Res() res: Response) {
         let result = this.stocksService.getDetails(code)

@@ -28,7 +28,7 @@ import {RootState} from "../../app/store";
 import {pushStocks, setActivated} from "../../app/stocksSlice";
 import {useDispatch, useSelector} from "react-redux";
 import axios from "axios";
-import {API_ENDPOINT} from "../../App";
+import {API_ENDPOINT} from "../../AppSettings";
 ChartJS.register(
     CategoryScale,
     LinearScale,

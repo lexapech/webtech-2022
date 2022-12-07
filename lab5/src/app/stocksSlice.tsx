@@ -14,7 +14,7 @@ export const stocksSlice = createSlice({
     initialState,
     reducers: {
         pushStocks: (state, stocks: PayloadAction<StocksState>) => {
-            state.stocksState.push(...stocks.payload.stocksState)
+            state.stocksState.push(...stocks.payload.stocksState.map(x=>{return {code:x.code,active:x.active}}))
         },
 
         setActivated: (state, action: PayloadAction<{code:string,active:boolean}>) => {

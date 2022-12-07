@@ -5,7 +5,7 @@ import {IBroker} from "./Broker";
 import Broker from "./Broker";
 import Header from "../header/Header";
 import axios from "axios";
-import {API_ENDPOINT} from "../../App";
+import {API_ENDPOINT} from "../../AppSettings";
 
 function fetchBrokers(callback:Function) {
     axios.get<{data:IBroker[]}>(API_ENDPOINT+'brokers/all').then(res=>{
