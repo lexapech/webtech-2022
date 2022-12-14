@@ -81,8 +81,9 @@ export class TradingService {
             this.stopTrading()
             return
         }
-        updateCallback(dto)
-            this.currentDate.setDate(this.currentDate.getDate() + 1)
+        if(stocks)
+            updateCallback(dto)
+        this.currentDate.setDate(this.currentDate.getDate() + 1)
     }
 
 }

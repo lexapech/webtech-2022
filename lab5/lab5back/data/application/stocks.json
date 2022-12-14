@@ -17,25 +17,25 @@
    "id": "2",
    "code": "AMD",
    "name": "Advanced Micro Devices, Inc.",
-   "active": false
+   "active": true
   },
   {
    "id": "3",
    "code": "AMZN",
    "name": "Amazon.com, Inc.",
-   "active": false
+   "active": true
   },
   {
    "id": "4",
    "code": "CSCO",
    "name": "Cisco Systems, Inc.",
-   "active": false
+   "active": true
   },
   {
    "id": "5",
    "code": "META",
    "name": "Meta, Inc.",
-   "active": false
+   "active": true
   },
   {
    "id": "6",
@@ -47,25 +47,25 @@
    "id": "7",
    "code": "NFLX",
    "name": "NFLX Inc.",
-   "active": true
+   "active": false
   },
   {
    "id": "8",
    "code": "QCOM",
    "name": "QUALCOMM Incorporated",
-   "active": true
+   "active": false
   },
   {
    "id": "9",
    "code": "SBUX",
    "name": "Starbucks, Inc.",
-   "active": true
+   "active": false
   },
   {
    "id": "10",
    "code": "TSLA",
    "name": "Tesla, Inc.",
-   "active": true
+   "active": false
   }
  ]
 }
