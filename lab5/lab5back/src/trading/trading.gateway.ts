@@ -25,8 +25,9 @@ interface StartTradingDTO {
 
 @WebSocketGateway({
     cors: {
-        origin: "http://localhost:3000"
-    }
+        origin: "*"
+    },
+    allowEIO3:true
 })
 export class TradingGateway {
 
@@ -36,6 +37,15 @@ export class TradingGateway {
     constructor(private tradingService: TradingService) {
 
     }
+    @SubscribeMessage('username')
+    loginUser(@ConnectedSocket() socket:any, @MessageBody() data: string){
+        socket.username = data
+    }
+    @SubscribeMessage('operation')
+    operation(@ConnectedSocket() socket:any, @MessageBody() data: { code:string,quantity:number }){
+        this.tradingService.operation(socket.username,data.code,data.quantity)
+    }
+
 
     @SubscribeMessage('start')
     startTrading(@ConnectedSocket() socket:any, @MessageBody() data: StartTradingDTO){
@@ -45,8 +55,23 @@ export class TradingGateway {
     update(data:StocksUpdateDTO) {
         for(let socket of Array.from(this.server.sockets.sockets.values()) as Socket[]) {
             socket.emit('update',data)
+            // @ts-ignore
+            if(socket.username) {
+                // @ts-ignore
+                socket.emit('userinfo',this.tradingService.getBrokerInfo(socket.username))
+            }
         }
 
+    }
+
+    @SubscribeMessage('stock')
+    getStock(@ConnectedSocket() socket:any, @MessageBody() data: string){
+        return this.tradingService.getStockInfo(data)
+    }
+
+    @SubscribeMessage('brokers')
+    getBrokers(){
+        return this.tradingService.getBrokers()
     }
 
     @SubscribeMessage('status')

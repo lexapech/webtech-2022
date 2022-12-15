@@ -18,13 +18,13 @@ export class BrokersController {
     @Post('new')
     addBroker(@Body() body: IBroker,@Res() res:Response) {
         if(!body || !body.name || !body.funds) return res.status(400)
-        this.brokersService.add(body)
+        this.brokersService.add({name:body.name,funds:+body.funds})
         return res.status(200)
     }
     @Post('update')
     changeBroker(@Body() body: IBroker,@Res() res:Response) {
         if(!body || !body.name || !body.funds) return res.status(400)
-        this.brokersService.update(body)
+        this.brokersService.update({name:body.name,funds:+body.funds})
         return res.status(200)
     }
     @Post('delete')
