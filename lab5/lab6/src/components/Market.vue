@@ -4,18 +4,43 @@
       width="500"
   ><v-card class="panel">
     <Line ref="line" :data="chartData" :options="chartOptions"/>
+    <p>Ваши лоты: <span class="font-semibold">{{lots}}</span></p>
+    <p>Стоимость: <span class="font-semibold">{{stockPrice}}</span></p>
+    <p>Прибыль: <PriceChange :prop-value="profit"/></p>
     <v-text-field type="number" placeholder="Количество акций" v-model="amount"></v-text-field>
-    <div class="flex justify-around">
+    <div class="flex justify-around ">
       <v-btn color="green" @click="buy">КУПИТЬ</v-btn>
       <v-btn color="red" @click="sell">ПРОДАТЬ</v-btn>
     </div>
 
   </v-card>
     </v-dialog>
+    <v-dialog
+        v-model="errorDialog"
+        width="300"
+      >
+        <v-card class="p-10">
+          <div class="flex justify-center my-5">
+            <p>{{errorMessage}}</p>
+          </div>
+          <div class="flex justify-center my-5">
+            <v-btn color="blue" @click="errorDialog=false">ОК</v-btn>
+          </div>
 
+        </v-card>
+    </v-dialog>
 
-  <div class="panel flex justify-between items-center px-10">
-    <span>Текущая дата: {{currentDate}}</span>
+  <div v-if="!running" class="h-full">
+    <div class="flex justify-center items-center h-full">
+      <h1 class="text-4xl">Торги остановлены</h1>
+    </div>
+  </div>
+  <div v-if="running">
+  <div  class="panel flex justify-between items-center pr-10">
+    <div class="flex gap-10 items-center">
+      <RouterLink to="/admin"><v-btn fab>Админ</v-btn></RouterLink>
+      <span>Текущая дата: {{currentDate}}</span>
+    </div>
     <span>Доступные средства: {{funds}}</span>
     <span>Стоимость акций: {{totalPrice}}</span>
   </div>
@@ -32,6 +57,9 @@
           </th>
           <th class="text-center">
             Изменение
+          </th>
+          <th class="text-center">
+            Прибыль
           </th>
         </tr>
         </thead>
@@ -51,10 +79,12 @@
             currency: 'USD'
           }) }}</td>
           <td class="text-center"><PriceChange :prop-value="stock.change"/></td>
+          <td class="text-center"><PriceChange :prop-value="getProfit(stock.code)"/></td>
         </tr>
         </tbody>
       </v-table>
     </div>
+  </div>
   </div>
 </template>
 
@@ -73,8 +103,13 @@ export default {
   components: {PriceChange,Line},
   mounted(){
     if (store.username) {
-      SocketService.connect(store.username)
+      SocketService.connect(store.username,(x)=>{
+        if(x!=="running") {
+          this.running=false
+        }
+      })
       SocketService.stocks((data) => {
+        this.running=!data.last
         this.setCurrentDate(data.date)
         this.stocks = data.stocks
         if (this.dialog) {
@@ -91,6 +126,8 @@ export default {
           style: 'currency',
           currency: 'USD'
         })
+        console.log(data)
+        this.brokerStocks = data.stocks
       })
       console.log("connected")
     }
@@ -99,7 +136,8 @@ export default {
     }
     console.log('mounted')
   },
-  beforeUnmount() {
+  beforeRouteLeave() {
+    console.log('unmount')
     SocketService.disconnect()
   },
   data(){
@@ -107,10 +145,14 @@ export default {
         stocks:[],
         currentDate:'',
         funds:'',
+        running:false,
         totalPrice:'',
         dialog:false,
         chartArray:[],
         amount:1,
+        brokerStocks:[],
+        errorDialog:false,
+        errorMessage:'',
         chartOptions: {
             elements: {
               point:{
@@ -126,6 +168,21 @@ export default {
     }
   },
   computed:{
+    stockPrice(){
+      let t = this.brokerStocks.find(x=>x.code===this.dialog)
+        return t?t.price.toLocaleString(undefined, {
+          style: 'currency',
+          currency: 'USD'
+        }):'0'
+    },
+    lots(){
+      let t = this.brokerStocks.find(x=>x.code===this.dialog)
+      return t?t.amount:'0'
+    },
+    profit(){
+      let t = this.brokerStocks.find(x=>x.code===this.dialog)
+      return t?t.profit:0
+    },
     chartData() {
       return {
         labels: this.chartArray.map(x=>x.date),
@@ -139,11 +196,26 @@ export default {
     }
   },
   methods:{
+    getProfit(code){
+      let t = this.brokerStocks.find(x=>x.code===code);
+      return (t!==undefined)?t.profit:undefined
+    },
     buy(){
-      SocketService.socketConnection.emit('operation', {code:this.dialog,quantity:+this.amount})
+      SocketService.socketConnection.emit('operation', {code:this.dialog,quantity:+this.amount},(x)=>{
+        if(x) {
+          this.errorDialog=true
+          this.errorMessage=x.message
+        }
+
+      })
     },
     sell(){
-      SocketService.socketConnection.emit('operation', {code:this.dialog,quantity:-this.amount})
+      SocketService.socketConnection.emit('operation', {code:this.dialog,quantity:-this.amount},(x)=>{
+        if(x) {
+          this.errorDialog=true
+          this.errorMessage=x.message
+        }
+      })
     },
     setCurrentDate(date){
       this.currentDate= new Date(date).toLocaleDateString(undefined,{

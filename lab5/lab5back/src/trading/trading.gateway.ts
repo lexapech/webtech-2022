@@ -43,7 +43,7 @@ export class TradingGateway {
     }
     @SubscribeMessage('operation')
     operation(@ConnectedSocket() socket:any, @MessageBody() data: { code:string,quantity:number }){
-        this.tradingService.operation(socket.username,data.code,data.quantity)
+        return this.tradingService.operation(socket.username,data.code,data.quantity)
     }
 
 
@@ -59,6 +59,10 @@ export class TradingGateway {
             if(socket.username) {
                 // @ts-ignore
                 socket.emit('userinfo',this.tradingService.getBrokerInfo(socket.username))
+            }
+            // @ts-ignore
+            if(socket.username==="admin") {
+                socket.emit('brokers',this.tradingService.getBrokers())
             }
         }
 

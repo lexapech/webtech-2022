@@ -21,6 +21,7 @@ export default {
   },
   computed:{
     valueToString() {
+      if(this.value===undefined) return '-'
       return this.value.toLocaleString(undefined, {
         style: 'currency',
         currency: 'USD'

@@ -7,14 +7,20 @@ import SocketIO, {Socket} from "socket.io-client";
     constructor() {
         this.socketConnection = SocketIO('http://localhost:3100',{withCredentials: false,autoConnect:false});
     }
-    connect(login:string){
+    connect(login:string,cb:Function){
         this.socketConnection.connect()
         this.socketConnection.on('connect',()=>{
+            console.log('connected')
             this.socketConnection.emit('username',login)
+            this.socketConnection.emit('status',(x:string)=>{
+                cb(x)
+            })
         })
 
     }
-
+     brokers(func:Function){
+         this.socketConnection.on('brokers',(data)=>func(data))
+     }
 
     stocks(func:Function){
         this.socketConnection.on('update',(data)=>func(data))
@@ -24,6 +30,9 @@ import SocketIO, {Socket} from "socket.io-client";
      }
 
     disconnect(){
+        this.socketConnection.off('update')
+        this.socketConnection.off('userinfo')
+        this.socketConnection.off('connect')
         this.socketConnection.disconnect()
     }
 }

@@ -26,8 +26,10 @@ export class TradingService {
         funds:number,
         stocks: {
             code:string,
-            amount:number,
-            buyPrice:number
+            purchases:{
+                amount:number,
+                price:number
+            }[]
         }[]
     }[]
     constructor(private consoleLogger:ConsoleLogger,
@@ -72,18 +74,37 @@ export class TradingService {
         if(broker) {
             let sum=0
             let currentPrices = this.stocksService.getStocksAtDate(this.currentDate, broker.stocks.map(x=>x.code))
-            let profit = currentPrices.map(x=>{
-                return { code:x.code,
-                profit:x.open - broker.stocks.find(s=>s.code===x.code).buyPrice}})
-            currentPrices.forEach(x=>{
-                sum+=x.open
+
+            let brokerStocksProfits = broker.stocks.map(stock=>{
+                let totalPrice = 0
+                let currentPrice=0
+                stock.purchases.forEach(x=>{
+                    totalPrice+=x.price*x.amount
+                    currentPrice+=currentPrices.find(x=>x.code===stock.code).open * x.amount
+                })
+                return {
+                    code:stock.code,
+                    buyPrice:totalPrice,
+                    price:currentPrice
+                }
+            })
+            let profit = brokerStocksProfits.map(x=>{
+                sum+=x.price
+                return {
+                    code:x.code,
+                   profit: x.price - x.buyPrice,
+                    current:x.price
+                }
             })
             let res = broker.stocks.map(x=>{
+                let amount = 0
+                x.purchases.forEach(t=>amount+=t.amount)
+                let tmp = profit.find(t=>t.code===x.code)
                 return {
                     code: x.code,
-                    amount: x.amount,
-                    price: currentPrices.find(t=>t.code===x.code).open,
-                    profit: profit.find(t=>t.code===x.code).profit
+                    amount: amount,
+                    price: tmp.current,
+                    profit: tmp.profit
                 }
             })
             return {
@@ -96,7 +117,7 @@ export class TradingService {
     }
 
     getBrokers() {
-        return this.brokers
+        return this.brokers.map(x=>this.getBrokerInfo(x.name))
     }
 
     getBrokerFunds(name:string) {
@@ -108,20 +129,59 @@ export class TradingService {
         if (broker) {
             let stock = broker.stocks.find(st=>st.code===code)
             if(stock){
-                if(stock.amount + amount < 0 ) {
+                let price = this.prevStocks.find(x=>x.code===code).price*amount
+                if(amount>0) {
+                    if (price <= broker.funds) {
+                        //BUY
+                        stock.purchases.push({
+                            amount: amount,
+                            price: this.prevStocks.find(x => x.code === code).price
+                        })
+                        broker.funds -= price
+                    } else {
+                        return {message:"Недостаточно средств"}
+
+                    }
+                }
+                else{
+                    //SELL
+                    let initial = amount
+                    console.log(amount)
+                    while(amount<0) {
+                        let last = stock.purchases[stock.purchases.length-1]
+                        if(!last) {
+                            break
+                        }
+                        if (last.amount + amount < 0) {
+                            amount += last.amount
+
+                            stock.purchases = stock.purchases.slice(0, stock.purchases.length - 1)
+                            console.log(stock.purchases)
+                        } else {
+                            last.amount += amount
+                            amount=0
+                        }
+                    }
+                    broker.funds += this.prevStocks.find(x=>x.code===code).price*(-initial+amount)
 
                 }
-                else if(stock.amount + amount ===0) {
-                    broker.stocks=broker.stocks.filter(x=>x.code!==code)
-                }
-                else {
-                    stock.amount+=amount
-                }
-
             }
             else {
+                let price = this.prevStocks.find(x=>x.code===code).price*amount
                 if(amount>0) {
-                    broker.stocks.push({code:code,amount:amount,buyPrice:this.prevStocks.find(x=>x.code===code).price})
+                    if (price <= broker.funds) {
+                        broker.stocks.push({
+                            code: code,
+                            purchases: [{
+                                amount: amount,
+                                price: this.prevStocks.find(x => x.code === code).price
+                            }]
+                        })
+                        broker.funds -= price
+                    }
+                    else {
+                        return {message:"Недостаточно средств"}
+                    }
                 }
             }
         }
