@@ -39,9 +39,9 @@
   <div  class="panel flex justify-between items-center pr-10">
     <div class="flex gap-10 items-center">
       <RouterLink to="/admin"><v-btn fab>Админ</v-btn></RouterLink>
-      <span>Текущая дата: {{currentDate}}</span>
+      <span id="date">Текущая дата: {{currentDate}}</span>
     </div>
-    <span>Доступные средства: {{funds}}</span>
+    <span id="funds">Доступные средства: {{funds}}</span>
     <span>Стоимость акций: {{totalPrice}}</span>
   </div>
   <div class="flex justify-center">
