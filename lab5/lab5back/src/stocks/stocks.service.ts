@@ -15,7 +15,8 @@ interface StockData {
 export class StocksService {
     stocksData: Object = {}
     dateRange:{min:Date|undefined,max:Date|undefined} = {min:undefined,max:undefined}
-    constructor(private consoleLogger:ConsoleLogger,private databaseService: DatabaseService) {
+    constructor(private consoleLogger:ConsoleLogger,
+                private databaseService: DatabaseService) {
         consoleLogger.setContext(this.constructor.name)
         this.loadFiles()
         let stockData = this.stocksData[Object.keys(this.stocksData)[0]]
@@ -81,6 +82,20 @@ export class StocksService {
     getDateRange() {
         return this.dateRange
     }
+
+    getRange(code:string,from:string,to:string):StockData[]|null {
+
+        if(this.stocksData[code])
+            return this.stocksData[code].filter(x=>new Date(x.Date) > new Date(from) && new Date(x.Date) < new Date(to)).map(x=>{
+                return {
+                    date: new Date(x.Date).toLocaleDateString(),
+                    open: +(x.Open.replace('$','')),
+                    close: +(x.Close.Last.replace('$',''))
+                }
+            }).reverse()
+        return null
+    }
+
 
     getDetails(code:string):StockData[]|null {
         if(this.stocksData[code])
